@@ -1,16 +1,16 @@
 /* ==========================================================================
-   МУН Лаундж — design tokens
+   МУН — design tokens
    ========================================================================== */
 :root{
-  --c-eclipse: #11110F;      /* цвет затмения — base bg */
-  --c-panel:   #171613;      /* slightly lifted panel bg */
-  --c-panel-2: #1e1c18;      /* card bg */
+  --c-eclipse: #0D1420;      /* цвет затмения — тёмно-синий (не чёрный) base bg */
+  --c-panel:   #121C2E;      /* slightly lifted panel bg */
+  --c-panel-2: #182338;      /* card bg */
   --c-milk:    #F1E8DA;      /* тёплый молочный — primary text */
   --c-mineral: #D3C1AE;      /* минеральный бежевый — secondary */
   --c-ember:   #B84B2F;      /* тлеющий уголь — accent */
   --c-ember-soft: #B84B2F33;
-  --c-graphite:#8b8579;      /* lightened graphite for dark-bg legibility */
-  --c-graphite-line: #56514B;
+  --c-graphite:#9099AC;      /* холодный серо-синий — вторичный текст */
+  --c-graphite-line: #3A4258;
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
@@ -120,7 +120,7 @@ button{ font-family: inherit; cursor:pointer; }
    ========================================================================== */
 .site-header{
   position: sticky; top:0; z-index: 40;
-  background: rgba(17,17,15,.86);
+  background: rgba(13,20,32,.86);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
@@ -185,8 +185,8 @@ button{ font-family: inherit; cursor:pointer; }
 .hero-bg{
   position:absolute; inset:-4%; z-index:0;
   background:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(184,75,47,.18), transparent 60%),
-    linear-gradient(160deg, #17140f 0%, #11110F 55%, #0c0b0a 100%);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(184,75,47,.16), transparent 60%),
+    linear-gradient(160deg, #172038 0%, #0D1420 55%, #070A12 100%);
   animation: heroBgDrift 22s ease-in-out infinite;
 }
 .hero-bg::before{
@@ -198,6 +198,18 @@ button{ font-family: inherit; cursor:pointer; }
   opacity:.8;
   animation: heroSweep 16s ease-in-out infinite;
 }
+/* "Затмение": мягкая тень медленно проходит через центр, где висит луна */
+.hero-bg::after{
+  content:'';
+  position:absolute; left:50%; top:44%;
+  width: min(70vw, 820px); height: min(70vw, 820px);
+  border-radius:50%;
+  transform: translate(-160%, -50%);
+  background: radial-gradient(circle, rgba(3,5,10,.75), transparent 65%);
+  filter: blur(36px);
+  mix-blend-mode: multiply;
+  animation: eclipseDrift 19s ease-in-out infinite;
+}
 @keyframes heroBgDrift{
   0%,100%{ transform: translate3d(0,0,0) scale(1); }
   50%{ transform: translate3d(-1.5%,-1%,0) scale(1.04); }
@@ -206,6 +218,12 @@ button{ font-family: inherit; cursor:pointer; }
   0%{ background-position: 20% 10%; }
   50%{ background-position: 80% 90%; }
   100%{ background-position: 20% 10%; }
+}
+@keyframes eclipseDrift{
+  0%{ transform: translate(-160%, -50%); opacity:.35; }
+  45%{ transform: translate(-50%, -50%); opacity:.9; }
+  55%{ transform: translate(-50%, -50%); opacity:.9; }
+  100%{ transform: translate(60%, -50%); opacity:.35; }
 }
 .hero-inner{ position:relative; z-index:1; padding-top: 90px; padding-bottom: 60px; }
 .hero-inner > *{
@@ -229,13 +247,35 @@ button{ font-family: inherit; cursor:pointer; }
   font-size:.72rem; letter-spacing:.25em; text-transform:uppercase; color: var(--c-graphite);
   margin-bottom: 34px;
 }
-.hero-logo{ margin: 0 0 8px; }
-.hero-logo h1{ margin:0; }
+.hero-logo{ position:relative; margin: 0 0 8px; }
+.hero-logo h1{ position:relative; z-index:1; margin:0; }
 .hero-logo-img{
   width: min(240px, 46vw);
   height: auto;
   margin: 0 auto;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,.35));
+  transition: transform .35s cubic-bezier(.16,.8,.24,1);
+  will-change: transform;
+}
+.hero-moon-glow{
+  position:absolute; left:50%; top:2%;
+  width: min(260px, 50vw); height: min(260px, 50vw);
+  transform: translate(-50%, 0);
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(241,232,218,.4), rgba(241,232,218,0) 68%);
+  filter: blur(4px);
+  z-index:0;
+  pointer-events:none;
+  transition: transform .5s cubic-bezier(.16,.8,.24,1);
+  animation: moonGlowPulse 19s ease-in-out infinite;
+}
+@keyframes moonGlowPulse{
+  0%{ opacity:.55; }
+  20%{ opacity:1; }
+  45%{ opacity:.3; }
+  55%{ opacity:.3; }
+  80%{ opacity:1; }
+  100%{ opacity:.55; }
 }
 .hero-tagline{
   font-family: var(--font-display);
@@ -307,7 +347,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 /* placeholder photo blocks */
 .ph-block{
   position:relative; overflow:hidden; border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--c-panel-2), var(--c-panel) 60%, #221f1a);
+  background: linear-gradient(135deg, var(--c-panel-2), var(--c-panel) 60%, #0F1826);
   display:flex; align-items:center; justify-content:center;
   min-height: 180px;
   transition: transform .6s cubic-bezier(.16,.8,.24,1);
@@ -404,7 +444,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
   display:none;
   position: fixed; left:0; right:0; bottom:0; z-index: 45;
   grid-template-columns: 1fr 1fr;
-  background: rgba(17,17,15,.94);
+  background: rgba(13,20,32,.94);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255,255,255,.08);
   padding: 10px clamp(14px,4vw,24px);
@@ -429,7 +469,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 }
 .menu-modal.is-open{ opacity:1; pointer-events:auto; }
 .menu-modal-scrim{
-  position:absolute; inset:0; background: rgba(6,6,5,.72); backdrop-filter: blur(3px);
+  position:absolute; inset:0; background: rgba(5,8,14,.72); backdrop-filter: blur(3px);
 }
 .menu-modal-panel{
   position:relative; z-index:1;
@@ -510,7 +550,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .menu-item:last-child{ border-bottom:none; }
 .menu-item-thumb{
   flex:none; width:56px; height:56px; border-radius:8px;
-  background: linear-gradient(135deg, var(--c-panel-2), #221f1a);
+  background: linear-gradient(135deg, var(--c-panel-2), #0F1826);
   display:flex; align-items:center; justify-content:center;
 }
 .menu-item-thumb span{

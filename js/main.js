@@ -376,6 +376,34 @@
   }
 
   /* ------------------------------------------------------------------
+   * Hero moon parallax (desktop pointer only)
+   * ------------------------------------------------------------------ */
+  var heroEl = document.querySelector(".hero");
+  var heroLogoImg = document.querySelector(".hero-logo-img");
+  var heroMoonGlow = document.querySelector(".hero-moon-glow");
+  var canHoverPrecisely = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (heroEl && heroLogoImg && !prefersReducedMotion && canHoverPrecisely) {
+    var parallaxRaf = null;
+    heroEl.addEventListener("mousemove", function (e) {
+      var rect = heroEl.getBoundingClientRect();
+      var relX = (e.clientX - rect.left) / rect.width - 0.5;
+      var relY = (e.clientY - rect.top) / rect.height - 0.5;
+      if (parallaxRaf) cancelAnimationFrame(parallaxRaf);
+      parallaxRaf = requestAnimationFrame(function () {
+        heroLogoImg.style.transform = "translate(" + (relX * 12).toFixed(1) + "px, " + (relY * 10).toFixed(1) + "px)";
+        if (heroMoonGlow) {
+          heroMoonGlow.style.transform = "translate(calc(-50% + " + (relX * 18).toFixed(1) + "px), " + (relY * 16).toFixed(1) + "px)";
+        }
+      });
+    });
+    heroEl.addEventListener("mouseleave", function () {
+      heroLogoImg.style.transform = "";
+      if (heroMoonGlow) heroMoonGlow.style.transform = "";
+    });
+  }
+
+  /* ------------------------------------------------------------------
    * Misc
    * ------------------------------------------------------------------ */
   var yearEl = document.getElementById("year");
