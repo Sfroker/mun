@@ -440,6 +440,9 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .menu-cta h2{ font-size: clamp(1.6rem, 3vw, 2.2rem); }
 .menu-cta-text{ margin-bottom: 30px; }
 
+.reviews-stars{ display:flex; justify-content:center; gap:8px; margin-bottom: 22px; }
+.reviews-stars svg{ width:18px; height:18px; fill: var(--c-ember); }
+
 /* Gallery */
 .gallery > .wrap{ margin-bottom: 40px; }
 .gallery-grid{
