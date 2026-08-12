@@ -65,9 +65,57 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg" aria-hidden="true"></div>
+    <svg class="hero-sky" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="rayGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F1E8DA" stop-opacity="0"/>
+          <stop offset="45%" stop-color="#F1E8DA" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#F1E8DA" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <g class="hero-constellations">
+        <path d="M80,60 L150,180 L230,90"/>
+        <path d="M950,70 L1020,160 L880,230"/>
+        <path d="M1100,300 L1050,480 L1120,720"/>
+      </g>
+      <g class="hero-rays">
+        <line class="ray ray-a" x1="500" y1="-40" x2="440" y2="260"/>
+        <line class="ray ray-b" x1="680" y1="-60" x2="610" y2="300"/>
+        <line class="ray ray-c" x1="150" y1="-50" x2="90" y2="240"/>
+        <line class="ray ray-d" x1="1050" y1="-40" x2="990" y2="280"/>
+        <line class="ray ray-e" x1="820" y1="20" x2="760" y2="320"/>
+      </g>
+      <g class="hero-stars" fill="#F1E8DA">
+        <circle class="star" cx="80" cy="60" r="1.4"/>
+        <circle class="star" cx="150" cy="180" r="1"/>
+        <circle class="star" cx="230" cy="90" r="1.8"/>
+        <circle class="star" cx="310" cy="220" r="1.2"/>
+        <circle class="star" cx="60" cy="320" r="1"/>
+        <circle class="star" cx="140" cy="420" r="1.6"/>
+        <circle class="star" cx="90" cy="560" r="1.2"/>
+        <circle class="star" cx="200" cy="650" r="1"/>
+        <circle class="star" cx="280" cy="720" r="1.4"/>
+        <circle class="star" cx="950" cy="70" r="1.6"/>
+        <circle class="star" cx="1020" cy="160" r="1"/>
+        <circle class="star" cx="880" cy="230" r="1.3"/>
+        <circle class="star" cx="1100" cy="300" r="1.8"/>
+        <circle class="star" cx="960" cy="380" r="1"/>
+        <circle class="star" cx="1050" cy="480" r="1.4"/>
+        <circle class="star" cx="900" cy="560" r="1.2"/>
+        <circle class="star" cx="1000" cy="660" r="1"/>
+        <circle class="star" cx="1120" cy="720" r="1.6"/>
+        <circle class="star" cx="600" cy="50" r="1"/>
+        <circle class="star" cx="500" cy="120" r="1.3"/>
+        <circle class="star" cx="700" cy="110" r="1"/>
+        <circle class="star" cx="420" cy="700" r="1.2"/>
+        <circle class="star" cx="760" cy="680" r="1.4"/>
+        <circle class="star" cx="600" cy="760" r="1"/>
+      </g>
+    </svg>
     <div class="wrap hero-inner">
       <p class="eyebrow">Чебоксары · ул. Толстого, 3 · ТЦ «Будайка», 3 этаж</p>
       <div class="hero-logo" id="hero-logo">
+        <div class="hero-moon-halo" aria-hidden="true"></div>
         <div class="hero-moon-glow" aria-hidden="true"></div>
         <h1><img class="hero-logo-img" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454"></h1>
       </div>

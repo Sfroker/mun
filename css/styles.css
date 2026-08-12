@@ -225,6 +225,37 @@ button{ font-family: inherit; cursor:pointer; }
   55%{ transform: translate(-50%, -50%); opacity:.9; }
   100%{ transform: translate(60%, -50%); opacity:.35; }
 }
+
+/* Ночное небо: звёзды, созвездия, падающие лучи лунного света */
+.hero-sky{
+  position:absolute; inset:0; z-index:0;
+  width:100%; height:100%;
+  pointer-events:none;
+}
+.hero-constellations path{
+  fill:none; stroke: var(--c-mineral); stroke-width:1; opacity:.16;
+}
+.ray{ stroke: url(#rayGrad); stroke-width:1.4; stroke-linecap:round; animation: rayFall 9s linear infinite; }
+.ray-a{ animation-delay: 0s; }
+.ray-b{ animation-delay: 1.8s; }
+.ray-c{ animation-delay: 3.6s; }
+.ray-d{ animation-delay: 5.4s; }
+.ray-e{ animation-delay: 7.2s; }
+@keyframes rayFall{
+  0%{ transform: translate(0, -60px); opacity:0; }
+  15%{ opacity:.75; }
+  75%{ opacity:.55; }
+  100%{ transform: translate(-40px, 260px); opacity:0; }
+}
+.star{ animation: starTwinkle 4.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.hero-stars .star:nth-child(3n){ animation-duration: 5.5s; animation-delay: .4s; }
+.hero-stars .star:nth-child(3n+1){ animation-duration: 3.8s; animation-delay: 1.1s; }
+.hero-stars .star:nth-child(3n+2){ animation-duration: 6.2s; animation-delay: 2s; }
+@keyframes starTwinkle{
+  0%,100%{ opacity:.2; transform: scale(.85); }
+  50%{ opacity:1; transform: scale(1.15); }
+}
+
 .hero-inner{ position:relative; z-index:1; padding-top: 90px; padding-bottom: 60px; }
 .hero-inner > *{
   opacity: 0;
@@ -257,25 +288,45 @@ button{ font-family: inherit; cursor:pointer; }
   transition: transform .35s cubic-bezier(.16,.8,.24,1);
   will-change: transform;
 }
-.hero-moon-glow{
-  position:absolute; left:50%; top:2%;
-  width: min(260px, 50vw); height: min(260px, 50vw);
+.hero-moon-halo{
+  position:absolute; left:50%; top:-18%;
+  width: min(620px, 130vw); height: min(620px, 130vw);
   transform: translate(-50%, 0);
   border-radius:50%;
-  background: radial-gradient(circle, rgba(241,232,218,.4), rgba(241,232,218,0) 68%);
-  filter: blur(4px);
+  background: radial-gradient(circle, rgba(184,146,109,.24), rgba(184,146,109,0) 62%);
+  filter: blur(18px);
+  z-index:0;
+  pointer-events:none;
+  transition: transform .6s cubic-bezier(.16,.8,.24,1);
+  animation: moonHaloPulse 19s ease-in-out infinite;
+}
+.hero-moon-glow{
+  position:absolute; left:50%; top:-6%;
+  width: min(440px, 88vw); height: min(440px, 88vw);
+  transform: translate(-50%, 0);
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(241,232,218,.55) 0%, rgba(241,232,218,.22) 40%, rgba(241,232,218,0) 70%);
+  filter: blur(2px);
   z-index:0;
   pointer-events:none;
   transition: transform .5s cubic-bezier(.16,.8,.24,1);
   animation: moonGlowPulse 19s ease-in-out infinite;
 }
+@keyframes moonHaloPulse{
+  0%{ opacity:.5; }
+  20%{ opacity:.85; }
+  45%{ opacity:.25; }
+  55%{ opacity:.25; }
+  80%{ opacity:.85; }
+  100%{ opacity:.5; }
+}
 @keyframes moonGlowPulse{
-  0%{ opacity:.55; }
+  0%{ opacity:.6; }
   20%{ opacity:1; }
-  45%{ opacity:.3; }
-  55%{ opacity:.3; }
+  45%{ opacity:.35; }
+  55%{ opacity:.35; }
   80%{ opacity:1; }
-  100%{ opacity:.55; }
+  100%{ opacity:.6; }
 }
 .hero-tagline{
   font-family: var(--font-display);
