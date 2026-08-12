@@ -58,7 +58,6 @@
    * ------------------------------------------------------------------ */
   var modal = document.getElementById("menu-modal");
   var modalBody = document.getElementById("menu-body");
-  var modalTabs = document.getElementById("menu-tabs");
   var modalNote = document.getElementById("menu-note");
   var modalSegment = document.getElementById("menu-segment");
   var modalSegmentIndicator = document.getElementById("menu-segment-indicator");
@@ -251,7 +250,6 @@
   function renderMenu(items, isFallback) {
     var groups = groupByCategory(items);
 
-    modalTabs.innerHTML = "";
     modalBody.innerHTML = "";
 
     if (!groups.length) {
@@ -260,20 +258,8 @@
       return;
     }
 
-    groups.forEach(function (group, i) {
-      var tab = el("button", "menu-tab" + (i === 0 ? " is-active" : ""), group.category);
-      tab.type = "button";
-      tab.addEventListener("click", function () {
-        modalTabs.querySelectorAll(".menu-tab").forEach(function (t) { t.classList.remove("is-active"); });
-        tab.classList.add("is-active");
-        var target = modalBody.querySelector('[data-cat="' + i + '"]');
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-      modalTabs.appendChild(tab);
-
-      var section = el("div");
-      section.setAttribute("data-cat", i);
-      section.appendChild(el("h4", "menu-category-title", group.category));
+    groups.forEach(function (group) {
+      modalBody.appendChild(el("h4", "menu-category-title", group.category));
 
       group.items.forEach(function (item) {
         var row = el("div", "menu-item");
@@ -287,10 +273,8 @@
         if (item.description) main.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
         row.appendChild(thumb);
         row.appendChild(main);
-        section.appendChild(row);
+        modalBody.appendChild(row);
       });
-
-      modalBody.appendChild(section);
     });
 
     modalNote.textContent = isFallback
@@ -319,7 +303,6 @@
         renderMenu(cached.items, cached.isFallback);
         return;
       }
-      modalTabs.innerHTML = "";
       modalBody.innerHTML = '<p class="menu-loading">Загружаем меню…</p>';
       modalNote.textContent = "";
       loadSegment(segment);
@@ -372,6 +355,25 @@
         });
       }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
       revealTargets.forEach(function (t) { revealObserver.observe(t); });
+    }
+  }
+
+  /* ------------------------------------------------------------------
+   * Mobile sticky action bar — appears once the hero is scrolled past
+   * ------------------------------------------------------------------ */
+  var stickyActions = document.querySelector(".sticky-actions");
+  var heroSection = document.querySelector(".hero");
+
+  if (stickyActions && heroSection) {
+    if ("IntersectionObserver" in window) {
+      var stickyObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          stickyActions.classList.toggle("is-visible", !entry.isIntersecting);
+        });
+      }, { threshold: 0 });
+      stickyObserver.observe(heroSection);
+    } else {
+      stickyActions.classList.add("is-visible");
     }
   }
 

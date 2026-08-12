@@ -246,20 +246,21 @@
 <div class="menu-modal" id="menu-modal" aria-hidden="true">
   <div class="menu-modal-scrim" data-close-menu></div>
   <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
-    <div class="menu-modal-head">
-      <h3 id="menu-modal-title">Меню МУН</h3>
-      <button class="menu-modal-close" data-close-menu aria-label="Закрыть меню">&times;</button>
+    <div class="menu-modal-inner">
+      <div class="menu-modal-head">
+        <h3 id="menu-modal-title">Меню МУН</h3>
+        <button class="menu-modal-close" data-close-menu aria-label="Закрыть меню">&times;</button>
+      </div>
+      <div class="menu-segment" id="menu-segment">
+        <span class="menu-segment-indicator" id="menu-segment-indicator" aria-hidden="true"></span>
+        <button class="menu-segment-btn is-active" type="button" data-segment="food">Кухня</button>
+        <button class="menu-segment-btn" type="button" data-segment="bar">Бар</button>
+      </div>
+      <div class="menu-modal-body" id="menu-body">
+        <p class="menu-loading">Загружаем меню…</p>
+      </div>
+      <p class="menu-note" id="menu-note"></p>
     </div>
-    <div class="menu-segment" id="menu-segment">
-      <span class="menu-segment-indicator" id="menu-segment-indicator" aria-hidden="true"></span>
-      <button class="menu-segment-btn is-active" type="button" data-segment="food">Кухня</button>
-      <button class="menu-segment-btn" type="button" data-segment="bar">Бар</button>
-    </div>
-    <div class="menu-tabs" id="menu-tabs"></div>
-    <div class="menu-modal-body" id="menu-body">
-      <p class="menu-loading">Загружаем меню…</p>
-    </div>
-    <p class="menu-note" id="menu-note"></p>
   </div>
 </div>
 
