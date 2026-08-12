@@ -382,8 +382,7 @@
    * ------------------------------------------------------------------ */
   var heroEl = document.querySelector(".hero");
   var heroLogoImg = document.querySelector(".hero-logo-img");
-  var heroMoonGlow = document.querySelector(".hero-moon-glow");
-  var heroMoonHalo = document.querySelector(".hero-moon-halo");
+  var heroMist = document.querySelector(".hero-mist");
   var canHoverPrecisely = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   if (heroEl && heroLogoImg && !prefersReducedMotion && canHoverPrecisely) {
@@ -395,18 +394,14 @@
       if (parallaxRaf) cancelAnimationFrame(parallaxRaf);
       parallaxRaf = requestAnimationFrame(function () {
         heroLogoImg.style.transform = "translate(" + (relX * 12).toFixed(1) + "px, " + (relY * 10).toFixed(1) + "px)";
-        if (heroMoonGlow) {
-          heroMoonGlow.style.transform = "translate(calc(-50% + " + (relX * 18).toFixed(1) + "px), " + (relY * 16).toFixed(1) + "px)";
-        }
-        if (heroMoonHalo) {
-          heroMoonHalo.style.transform = "translate(calc(-50% + " + (relX * 8).toFixed(1) + "px), " + (relY * 6).toFixed(1) + "px)";
+        if (heroMist) {
+          heroMist.style.transform = "translate(calc(-50% + " + (relX * 14).toFixed(1) + "px), " + (relY * 10).toFixed(1) + "px)";
         }
       });
     });
     heroEl.addEventListener("mouseleave", function () {
       heroLogoImg.style.transform = "";
-      if (heroMoonGlow) heroMoonGlow.style.transform = "";
-      if (heroMoonHalo) heroMoonHalo.style.transform = "";
+      if (heroMist) heroMist.style.transform = "";
     });
   }
 
