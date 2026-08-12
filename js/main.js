@@ -259,7 +259,8 @@
     }
 
     groups.forEach(function (group) {
-      modalBody.appendChild(el("h4", "menu-category-title", group.category));
+      var category = el("div", "menu-category");
+      category.appendChild(el("h4", "menu-category-title", group.category));
 
       group.items.forEach(function (item) {
         var row = el("div", "menu-item");
@@ -273,8 +274,10 @@
         if (item.description) main.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
         row.appendChild(thumb);
         row.appendChild(main);
-        modalBody.appendChild(row);
+        category.appendChild(row);
       });
+
+      modalBody.appendChild(category);
     });
 
     modalNote.textContent = isFallback
