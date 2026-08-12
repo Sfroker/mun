@@ -16,13 +16,17 @@
    *   4. Скопируйте ссылку и вставьте в соответствующую константу ниже.
    *   5. Повторите для второго листа.
    *
-   * Ожидаемые столбцы (первая строка — заголовок, порядок не важен):
-   *   category | name | description | price
+   * Столбцы распознаются по названию (регистр и порядок не важны, форматы
+   * вроде «Наименование», «Отпускная цена новая», «Регион/Страна», «Объем»
+   * поддержаны из коробки — см. normalizeKey ниже). Строки-разделители
+   * разделов (где заполнена только одна ячейка) читаются как заголовок
+   * категории для всех следующих строк — под такую структуру и сделаны
+   * оба листа таблицы «Мун Меню и Карта бара».
    * Пока ссылки не указаны — показывается встроенный снимок реального
    * меню (js/menu-data.js), актуальный на 06.08.2026.
    * ------------------------------------------------------------------ */
-  var MENU_FOOD_CSV_URL = ""; // <-- CSV-ссылка листа с меню кухни
-  var MENU_BAR_CSV_URL = "";  // <-- CSV-ссылка листа с картой бара
+  var MENU_FOOD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCfb102KV9uc-4rD_IF5uLubRoAKLe-Y7wNTly6ZQggB6XTJsBgI7rSnKvUZvbDfKXOItiYxCqyh-s/pub?gid=1020992713&single=true&output=csv";
+  var MENU_BAR_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCfb102KV9uc-4rD_IF5uLubRoAKLe-Y7wNTly6ZQggB6XTJsBgI7rSnKvUZvbDfKXOItiYxCqyh-s/pub?gid=1889053653&single=true&output=csv";
 
   var FALLBACK_MENU = (window.MUN_MENU_DATA || { food: [], bar: [] });
   var SEGMENT_LABELS = { food: "Кухня", bar: "Бар" };
@@ -141,13 +145,23 @@
 
   function normalizeKey(key) {
     var k = key.trim().toLowerCase();
-    var map = {
-      "категория": "category", "category": "category",
-      "название": "name", "блюдо": "name", "name": "name",
-      "описание": "description", "description": "description", "состав": "description",
-      "цена": "price", "price": "price", "стоимость": "price"
-    };
-    return map[k] || k;
+    if (k === "category" || k.indexOf("категор") !== -1) return "category";
+    if (k === "name" || k.indexOf("наимен") !== -1 || k.indexOf("назв") !== -1 || k.indexOf("блюд") !== -1) return "name";
+    if (k === "price" || k.indexOf("цена") !== -1 || k.indexOf("стоим") !== -1) return "price";
+    if (k === "description" || k.indexOf("описан") !== -1) return "description";
+    if (k.indexOf("состав") !== -1) return "composition";
+    if (k.indexOf("регион") !== -1 || k.indexOf("стран") !== -1) return "region";
+    if (k.indexOf("объ") !== -1 && (k.indexOf("объем") !== -1 || k.indexOf("объём") !== -1)) return "volume";
+    return k; // прочие столбцы (поставщик, значок в меню и т.п.) игнорируются
+  }
+
+  function formatPrice(raw) {
+    if (!raw) return "";
+    var cleaned = String(raw).replace(/[^\d,\s]/g, "").trim();
+    if (!cleaned) return "";
+    cleaned = cleaned.replace(/,00\s*$/, "");
+    cleaned = cleaned.replace(/\s+/g, "");
+    return cleaned;
   }
 
   function csvToMenu(text) {
@@ -155,11 +169,39 @@
     if (rows.length < 2) return [];
     var headers = rows[0].map(normalizeKey);
     var items = [];
+    var currentCategory = "";
+
     for (var i = 1; i < rows.length; i++) {
       var r = rows[i];
-      var item = {};
-      headers.forEach(function (h, idx) { item[h] = (r[idx] || "").trim(); });
-      if (item.name) items.push(item);
+      var nonEmpty = r.filter(function (v) { return v && v.trim() !== ""; });
+
+      // Строка-разделитель раздела: заполнена только одна ячейка —
+      // так на обоих листах таблицы оформлены заголовки категорий
+      // (объединённые ячейки экспортируются как одно значение в строке).
+      if (nonEmpty.length <= 1) {
+        if (nonEmpty.length === 1) currentCategory = nonEmpty[0].trim();
+        continue;
+      }
+
+      var raw = {};
+      headers.forEach(function (h, idx) { raw[h] = (r[idx] || "").trim(); });
+      if (!raw.name) continue;
+
+      var descParts = [];
+      if (raw.description) descParts.push(raw.description);
+      if (raw.composition) descParts.push(raw.composition);
+      if (raw.region) descParts.push(raw.region);
+      if (raw.volume) {
+        // числовые значения объёма без единицы (напр. «0,75») по умолчанию — литры
+        descParts.push(/^[\d.,\s]+$/.test(raw.volume) ? raw.volume + " л" : raw.volume);
+      }
+
+      items.push({
+        category: raw.category || currentCategory || "Меню",
+        name: raw.name,
+        description: descParts.join(" · "),
+        price: formatPrice(raw.price)
+      });
     }
     return items;
   }
