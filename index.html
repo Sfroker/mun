@@ -26,23 +26,20 @@
 <header class="site-header" id="top">
   <div class="wrap header-row">
     <a href="#top" class="logo" aria-label="МУН — на главную">
-      <svg class="logo-ring" viewBox="296.7 -523.3 773.9 777" aria-hidden="true"><path d="M318.7-132.9c0.3-200.4,160.2-365.4,359.6-368.4c199.8-3,370.4,157.7,370.3,367C1048.5,63.7,890.8,230.7,684,231.7 C476.9,232.6,317.8,57.1,318.7-132.9z M724.1,178c25.7-0.7,50.6-3.6,75-10.2c79-21.4,141-66.2,184.8-135.6 c38.1-60.5,54.6-126.6,47.7-197.8c-6.5-67.5-32.6-127.1-77.3-178.1c-55.9-63.9-126.4-100.1-211.4-105.5 c-73.3-4.6-140,15.6-198.7,59.4C470.7-334.8,428.9-260.9,417.8-170c-6.6,53.7,0.3,106.2,22.3,155.5 C494.8,108.1,591.4,170.2,724.1,178z"/></svg>
-      <span class="logo-text">
-        <span class="logo-word">МУН</span>
-      </span>
+      <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
     </a>
 
     <nav class="main-nav" id="main-nav">
       <a href="#about">О нас</a>
       <a href="#menu-section" data-open-menu>Меню</a>
       <a href="#gallery">Атмосфера</a>
-      <a href="#booking">Бронирование</a>
+      <a href="#booking" data-open-booking>Бронирование</a>
       <a href="#contacts">Контакты</a>
     </nav>
 
     <div class="header-actions">
       <a class="phone-link" href="tel:+78352755505">8 (835) 275-55-05</a>
-      <a class="btn btn-outline" href="#booking">Забронировать стол</a>
+      <a class="btn btn-outline" href="#booking" data-open-booking>Забронировать стол</a>
     </div>
 
     <button class="burger" id="burger" aria-label="Открыть меню навигации" aria-expanded="false">
@@ -54,7 +51,7 @@
     <a href="#about">О нас</a>
     <a href="#menu-section" data-open-menu>Меню</a>
     <a href="#gallery">Атмосфера</a>
-    <a href="#booking">Бронирование</a>
+    <a href="#booking" data-open-booking>Бронирование</a>
     <a href="#contacts">Контакты</a>
     <a class="phone-link" href="tel:+78352755505">8 (835) 275-55-05</a>
   </div>
@@ -125,7 +122,7 @@
       <div class="divider"></div>
       <p class="hero-tagline">Место, где есть ваш сценарий вечера</p>
       <div class="hero-actions">
-        <a href="#booking" class="btn btn-primary">Забронировать стол</a>
+        <a href="#booking" class="btn btn-primary" data-open-booking>Забронировать стол</a>
         <button class="btn btn-ghost" data-open-menu>Смотреть меню</button>
       </div>
     </div>
@@ -204,15 +201,7 @@
         Если форма не загрузилась, воспользуйтесь
         <a href="https://restoza.ru/book/moon-magic" target="_blank" rel="noopener">прямой ссылкой</a>.
       </p>
-    </div>
-    <div class="wrap booking-frame-wrap" data-reveal>
-      <iframe
-        src="https://restoza.ru/book/moon-magic?embed=1"
-        width="100%"
-        height="900"
-        style="border:0"
-        loading="lazy"
-        title="Бронирование стола"></iframe>
+      <button class="btn btn-primary" data-open-booking>Забронировать стол</button>
     </div>
   </section>
 
@@ -253,7 +242,7 @@
         </dl>
 
         <div class="contact-cta">
-          <a class="btn btn-primary" href="#booking">Забронировать стол</a>
+          <a class="btn btn-primary" href="#booking" data-open-booking>Забронировать стол</a>
           <a class="btn btn-outline" href="tel:+78352755505">Позвонить</a>
         </div>
       </div>
@@ -273,10 +262,7 @@
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <div class="logo footer-logo">
-      <svg class="logo-ring" viewBox="296.7 -523.3 773.9 777" aria-hidden="true"><path d="M318.7-132.9c0.3-200.4,160.2-365.4,359.6-368.4c199.8-3,370.4,157.7,370.3,367C1048.5,63.7,890.8,230.7,684,231.7 C476.9,232.6,317.8,57.1,318.7-132.9z M724.1,178c25.7-0.7,50.6-3.6,75-10.2c79-21.4,141-66.2,184.8-135.6 c38.1-60.5,54.6-126.6,47.7-197.8c-6.5-67.5-32.6-127.1-77.3-178.1c-55.9-63.9-126.4-100.1-211.4-105.5 c-73.3-4.6-140,15.6-198.7,59.4C470.7-334.8,428.9-260.9,417.8-170c-6.6,53.7,0.3,106.2,22.3,155.5 C494.8,108.1,591.4,170.2,724.1,178z"/></svg>
-      <span class="logo-text">
-        <span class="logo-word">МУН</span>
-      </span>
+      <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
     </div>
     <p class="footer-motto">МУН — это место, где люди проводят время вместе</p>
     <div class="footer-bottom">
@@ -290,7 +276,7 @@
 <!-- Mobile sticky action bar -->
 <div class="sticky-actions" role="toolbar" aria-label="Быстрые действия">
   <a href="tel:+78352755505" class="sticky-btn sticky-call">Позвонить</a>
-  <a href="#booking" class="sticky-btn sticky-book">Забронировать</a>
+  <a href="#booking" class="sticky-btn sticky-book" data-open-booking>Забронировать</a>
 </div>
 
 <!-- MENU MODAL -->
@@ -311,6 +297,32 @@
         <p class="menu-loading">Загружаем меню…</p>
       </div>
       <p class="menu-note" id="menu-note"></p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="menu-modal" id="booking-modal" aria-hidden="true">
+  <div class="menu-modal-scrim" data-close-booking></div>
+  <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+    <div class="menu-modal-inner booking-modal-inner">
+      <div class="menu-modal-head">
+        <h3 id="booking-modal-title">Бронирование стола</h3>
+        <button class="menu-modal-close" data-close-booking aria-label="Закрыть бронирование">&times;</button>
+      </div>
+      <div class="booking-modal-body">
+        <iframe
+          id="booking-iframe"
+          data-src="https://restoza.ru/book/moon-magic?embed=1"
+          width="100%"
+          height="900"
+          style="border:0"
+          title="Бронирование стола"></iframe>
+        <p class="booking-modal-fallback">
+          Если форма не загрузилась, воспользуйтесь
+          <a href="https://restoza.ru/book/moon-magic" target="_blank" rel="noopener">прямой ссылкой</a>.
+        </p>
+      </div>
     </div>
   </div>
 </div>

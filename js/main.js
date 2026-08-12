@@ -120,6 +120,7 @@
   openTriggers.forEach(function (el) {
     el.addEventListener("click", function (e) {
       e.preventDefault();
+      if (bookingModal) closeBookingModal();
       openModal();
     });
   });
@@ -129,6 +130,49 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
   });
+
+  /* ------------------------------------------------------------------
+   * Booking modal
+   * ------------------------------------------------------------------ */
+  var bookingModal = document.getElementById("booking-modal");
+  var bookingIframe = document.getElementById("booking-iframe");
+  var bookingOpenTriggers = document.querySelectorAll("[data-open-booking]");
+  var bookingCloseTriggers = document.querySelectorAll("[data-close-booking]");
+  var bookingLastFocused = null;
+
+  function openBookingModal() {
+    bookingLastFocused = document.activeElement;
+    if (bookingIframe && !bookingIframe.getAttribute("src") && bookingIframe.dataset.src) {
+      bookingIframe.src = bookingIframe.dataset.src;
+    }
+    bookingModal.classList.add("is-open");
+    bookingModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeMobileNav();
+  }
+
+  function closeBookingModal() {
+    bookingModal.classList.remove("is-open");
+    bookingModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    if (bookingLastFocused) bookingLastFocused.focus();
+  }
+
+  if (bookingModal) {
+    bookingOpenTriggers.forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeModal();
+        openBookingModal();
+      });
+    });
+    bookingCloseTriggers.forEach(function (el) {
+      el.addEventListener("click", closeBookingModal);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && bookingModal.classList.contains("is-open")) closeBookingModal();
+    });
+  }
 
   /* ---------------- CSV parsing ---------------- */
   function parseCSV(text) {
