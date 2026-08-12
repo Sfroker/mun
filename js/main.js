@@ -61,6 +61,7 @@
   var modalTabs = document.getElementById("menu-tabs");
   var modalNote = document.getElementById("menu-note");
   var modalSegment = document.getElementById("menu-segment");
+  var modalSegmentIndicator = document.getElementById("menu-segment-indicator");
   var openTriggers = document.querySelectorAll("[data-open-menu]");
   var closeTriggers = document.querySelectorAll("[data-close-menu]");
 
@@ -68,18 +69,36 @@
   var loadedSegments = {}; // segment -> { items, isFallback }
   var lastFocused = null;
 
+  function positionSegmentIndicator() {
+    if (!modalSegment || !modalSegmentIndicator) return;
+    var activeBtn = modalSegment.querySelector(".menu-segment-btn.is-active");
+    if (!activeBtn) return;
+    modalSegmentIndicator.style.width = activeBtn.offsetWidth + "px";
+    modalSegmentIndicator.style.transform = "translateX(" + activeBtn.offsetLeft + "px)";
+  }
+
   if (modalSegment) {
     modalSegment.querySelectorAll(".menu-segment-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var seg = btn.getAttribute("data-segment");
-        if (seg === activeSegment) return;
-        activeSegment = seg;
         modalSegment.querySelectorAll(".menu-segment-btn").forEach(function (b) {
           b.classList.toggle("is-active", b === btn);
         });
+        positionSegmentIndicator();
+        if (seg === activeSegment) return;
+        activeSegment = seg;
         showSegment(seg);
       });
     });
+    window.addEventListener("resize", debounce(positionSegmentIndicator, 150));
+  }
+
+  function debounce(fn, wait) {
+    var t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(fn, wait);
+    };
   }
 
   function openModal() {
@@ -89,6 +108,7 @@
     document.body.classList.add("modal-open");
     closeMobileNav();
     showSegment(activeSegment);
+    requestAnimationFrame(positionSegmentIndicator);
   }
 
   function closeModal() {
@@ -284,16 +304,26 @@
     return d.innerHTML;
   }
 
+  function fadeBody(update) {
+    modalBody.classList.add("is-fading");
+    setTimeout(function () {
+      update();
+      modalBody.classList.remove("is-fading");
+    }, 180);
+  }
+
   function showSegment(segment) {
     var cached = loadedSegments[segment];
-    if (cached) {
-      renderMenu(cached.items, cached.isFallback);
-      return;
-    }
-    modalTabs.innerHTML = "";
-    modalBody.innerHTML = '<p class="menu-loading">Загружаем меню…</p>';
-    modalNote.textContent = "";
-    loadSegment(segment);
+    fadeBody(function () {
+      if (cached) {
+        renderMenu(cached.items, cached.isFallback);
+        return;
+      }
+      modalTabs.innerHTML = "";
+      modalBody.innerHTML = '<p class="menu-loading">Загружаем меню…</p>';
+      modalNote.textContent = "";
+      loadSegment(segment);
+    });
   }
 
   function loadSegment(segment) {
@@ -321,6 +351,28 @@
         loadedSegments[segment] = { items: fallbackItems, isFallback: true };
         if (segment === activeSegment) renderMenu(fallbackItems, true);
       });
+  }
+
+  /* ------------------------------------------------------------------
+   * Scroll reveal
+   * ------------------------------------------------------------------ */
+  var revealTargets = document.querySelectorAll("[data-reveal]");
+  var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (revealTargets.length) {
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      revealTargets.forEach(function (t) { t.classList.add("is-visible"); });
+    } else {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+      revealTargets.forEach(function (t) { revealObserver.observe(t); });
+    }
   }
 
   /* ------------------------------------------------------------------
