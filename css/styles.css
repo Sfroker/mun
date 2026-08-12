@@ -394,6 +394,17 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 }
 .menu-modal-close:hover{ background: rgba(255,255,255,.08); }
 
+.menu-segment{
+  display:flex; gap: 10px;
+  padding: 18px 26px 0;
+}
+.menu-segment-btn{
+  flex:1; background: var(--c-panel-2); border: 1px solid var(--c-graphite-line); color: var(--c-mineral);
+  padding: 11px 18px; border-radius: 999px; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+  transition: all var(--transition);
+}
+.menu-segment-btn.is-active{ background: var(--c-milk); border-color: var(--c-milk); color: var(--c-eclipse); }
+
 .menu-tabs{
   display:flex; gap: 8px; overflow-x:auto;
   padding: 16px 26px; border-bottom: 1px solid rgba(255,255,255,.07);

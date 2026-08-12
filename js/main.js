@@ -4,35 +4,28 @@
   /* ------------------------------------------------------------------
    * Google Sheets menu source
    * ------------------------------------------------------------------
-   * Paste the CSV export link of your published Google Sheet below.
-   * How to get it:
-   *   1. In Google Sheets: Файл → Поделиться → Опубликовать в интернете.
-   *   2. Выберите нужный лист и формат "CSV", нажмите "Опубликовать".
-   *   3. Скопируйте ссылку (обычно вида
-   *      https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv)
-   *      и вставьте её сюда.
+   * Меню и карта бара — два разных листа ОДНОЙ таблицы. Разносить их по
+   * разным файлам не нужно, но Google даёт отдельную ссылку на CSV для
+   * каждого листа, поэтому ссылок здесь две.
    *
-   * Expected columns (first row = header, any order, RU or EN names are ok):
+   * Как получить ссылку для листа:
+   *   1. В Google Таблице откройте нужный лист (вкладку снизу).
+   *   2. Файл → Поделиться → Опубликовать в интернете.
+   *   3. В первом выпадающем списке выберите именно этот лист (не «Всю
+   *      книгу»), во втором — формат CSV, нажмите «Опубликовать».
+   *   4. Скопируйте ссылку и вставьте в соответствующую константу ниже.
+   *   5. Повторите для второго листа.
+   *
+   * Ожидаемые столбцы (первая строка — заголовок, порядок не важен):
    *   category | name | description | price
-   * Example row: Бургеры, Чизбургер МУН, Говядина, чеддер, соус манго, 590
-   *
-   * Until a real link is set, the site shows clearly-labelled demo items
-   * so the "Меню" button always works.
+   * Пока ссылки не указаны — показывается встроенный снимок реального
+   * меню (js/menu-data.js), актуальный на 06.08.2026.
    * ------------------------------------------------------------------ */
-  var MENU_SHEET_CSV_URL = ""; // <-- вставьте ссылку на опубликованный CSV сюда
+  var MENU_FOOD_CSV_URL = ""; // <-- CSV-ссылка листа с меню кухни
+  var MENU_BAR_CSV_URL = "";  // <-- CSV-ссылка листа с картой бара
 
-  var DEMO_MENU = [
-    { category: "Бургеры", name: "Бургер МУН", description: "Говяжья котлета, чеддер, соус, брошь", price: "—" },
-    { category: "Бургеры", name: "Чикен-бургер", description: "Куриное бедро в темпуре, слоу, соус", price: "—" },
-    { category: "Поке", name: "Поке с лососем", description: "Рис, лосось, авокадо, эдамаме", price: "—" },
-    { category: "Поке", name: "Поке с тунцом", description: "Рис, тунец, манго, кунжут", price: "—" },
-    { category: "Супы", name: "Том-ям", description: "С креветками, кокосовым молоком и грибами", price: "—" },
-    { category: "Супы", name: "Фо-бо", description: "Говяжья лапша с зеленью и лаймом", price: "—" },
-    { category: "Стейки", name: "Стейк Рибай", description: "Мраморная говядина, гриль-овощи", price: "—" },
-    { category: "Салаты", name: "Салат с креветками", description: "Микс салатов, авокадо, цитрус", price: "—" },
-    { category: "Крылья", name: "Куриные крылья BBQ", description: "Соус барбекю, сельдерей", price: "—" },
-    { category: "Бар", name: "Коктейль дня", description: "Уточняйте у бармена", price: "—" }
-  ];
+  var FALLBACK_MENU = (window.MUN_MENU_DATA || { food: [], bar: [] });
+  var SEGMENT_LABELS = { food: "Кухня", bar: "Бар" };
 
   /* ------------------------------------------------------------------
    * Header / mobile nav
@@ -63,11 +56,27 @@
   var modalBody = document.getElementById("menu-body");
   var modalTabs = document.getElementById("menu-tabs");
   var modalNote = document.getElementById("menu-note");
+  var modalSegment = document.getElementById("menu-segment");
   var openTriggers = document.querySelectorAll("[data-open-menu]");
   var closeTriggers = document.querySelectorAll("[data-close-menu]");
 
-  var menuLoaded = false;
+  var activeSegment = "food";
+  var loadedSegments = {}; // segment -> { items, isFallback }
   var lastFocused = null;
+
+  if (modalSegment) {
+    modalSegment.querySelectorAll(".menu-segment-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var seg = btn.getAttribute("data-segment");
+        if (seg === activeSegment) return;
+        activeSegment = seg;
+        modalSegment.querySelectorAll(".menu-segment-btn").forEach(function (b) {
+          b.classList.toggle("is-active", b === btn);
+        });
+        showSegment(seg);
+      });
+    });
+  }
 
   function openModal() {
     lastFocused = document.activeElement;
@@ -75,7 +84,7 @@
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
     closeMobileNav();
-    if (!menuLoaded) loadMenu();
+    showSegment(activeSegment);
   }
 
   function closeModal() {
@@ -177,7 +186,7 @@
     return e;
   }
 
-  function renderMenu(items, isDemo) {
+  function renderMenu(items, isFallback) {
     var groups = groupByCategory(items);
 
     modalTabs.innerHTML = "";
@@ -185,6 +194,7 @@
 
     if (!groups.length) {
       modalBody.innerHTML = '<p class="menu-error">Меню временно недоступно. Загляните позже или уточните у официанта.</p>';
+      modalNote.textContent = "";
       return;
     }
 
@@ -210,7 +220,7 @@
         var nameRow = el("div", "menu-item-row");
         nameRow.appendChild(el("span", "menu-item-name", escapeHTML(item.name)));
         nameRow.appendChild(el("span", "menu-item-leader"));
-        if (item.price) nameRow.appendChild(el("span", "menu-item-price", escapeHTML(item.price) + (isDemo ? "" : " ₽")));
+        if (item.price) nameRow.appendChild(el("span", "menu-item-price", escapeHTML(item.price) + " ₽"));
         main.appendChild(nameRow);
         if (item.description) main.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
         row.appendChild(thumb);
@@ -221,8 +231,8 @@
       modalBody.appendChild(section);
     });
 
-    modalNote.textContent = isDemo
-      ? "Показаны демонстрационные позиции. Актуальное меню подключается через Google Таблицу."
+    modalNote.textContent = isFallback
+      ? "Показан снимок меню на 06.08.2026. Актуальность и наличие позиций уточняйте у персонала."
       : "Цены и наличие позиций уточняйте у персонала.";
   }
 
@@ -232,13 +242,29 @@
     return d.innerHTML;
   }
 
-  function loadMenu() {
-    if (!MENU_SHEET_CSV_URL) {
-      renderMenu(DEMO_MENU, true);
-      menuLoaded = true;
+  function showSegment(segment) {
+    var cached = loadedSegments[segment];
+    if (cached) {
+      renderMenu(cached.items, cached.isFallback);
       return;
     }
-    fetch(MENU_SHEET_CSV_URL, { cache: "no-store" })
+    modalTabs.innerHTML = "";
+    modalBody.innerHTML = '<p class="menu-loading">Загружаем меню…</p>';
+    modalNote.textContent = "";
+    loadSegment(segment);
+  }
+
+  function loadSegment(segment) {
+    var csvUrl = segment === "bar" ? MENU_BAR_CSV_URL : MENU_FOOD_CSV_URL;
+    var fallbackItems = FALLBACK_MENU[segment] || [];
+
+    if (!csvUrl) {
+      loadedSegments[segment] = { items: fallbackItems, isFallback: true };
+      if (segment === activeSegment) renderMenu(fallbackItems, true);
+      return;
+    }
+
+    fetch(csvUrl, { cache: "no-store" })
       .then(function (res) {
         if (!res.ok) throw new Error("network");
         return res.text();
@@ -246,13 +272,12 @@
       .then(function (text) {
         var items = csvToMenu(text);
         if (!items.length) throw new Error("empty");
-        renderMenu(items, false);
+        loadedSegments[segment] = { items: items, isFallback: false };
+        if (segment === activeSegment) renderMenu(items, false);
       })
       .catch(function () {
-        renderMenu(DEMO_MENU, true);
-      })
-      .finally(function () {
-        menuLoaded = true;
+        loadedSegments[segment] = { items: fallbackItems, isFallback: true };
+        if (segment === activeSegment) renderMenu(fallbackItems, true);
       });
   }
 
