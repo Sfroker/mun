@@ -606,7 +606,9 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .menu-segment-btn.is-active{ color: var(--c-eclipse); }
 
 .menu-modal-body{
-  flex:1; overflow-y:auto; overflow-x:hidden;
+  flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 8px clamp(20px,4vw,48px) 40px;
   opacity:1; transition: opacity .2s ease;
   display:grid;
@@ -650,7 +652,9 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 
 .booking-modal-inner{ max-width: 900px; }
 .booking-modal-body{
-  flex:1; overflow-y:auto;
+  flex:1; min-height:0; overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 24px clamp(20px,4vw,48px) 40px;
 }
 .booking-modal-body iframe{ display:block; width:100%; height:900px; }
