@@ -100,6 +100,19 @@
     };
   }
 
+  // A lingering (even identity) CSS transform on an ancestor is a known
+  // cause of touch scrolling silently failing inside it on iOS Safari, so
+  // once the open "pop" animation finishes, drop the transform entirely.
+  document.querySelectorAll(".menu-modal-panel").forEach(function (panel) {
+    panel.addEventListener("transitionend", function (e) {
+      if (e.target !== panel || e.propertyName !== "transform") return;
+      var parentModal = panel.closest(".menu-modal");
+      if (parentModal && parentModal.classList.contains("is-open")) {
+        panel.classList.add("is-settled");
+      }
+    });
+  });
+
   function openModal() {
     lastFocused = document.activeElement;
     modal.classList.add("is-open");
@@ -114,6 +127,8 @@
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
+    var panel = modal.querySelector(".menu-modal-panel");
+    if (panel) panel.classList.remove("is-settled");
     if (lastFocused) lastFocused.focus();
   }
 
@@ -155,6 +170,8 @@
     bookingModal.classList.remove("is-open");
     bookingModal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
+    var bookingPanel = bookingModal.querySelector(".menu-modal-panel");
+    if (bookingPanel) bookingPanel.classList.remove("is-settled");
     if (bookingLastFocused) bookingLastFocused.focus();
   }
 

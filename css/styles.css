@@ -564,6 +564,10 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
   transition: transform var(--transition-pop), opacity var(--transition-pop);
 }
 .menu-modal.is-open .menu-modal-panel{ transform: scale(1); opacity:1; }
+/* Drop the lingering transform once the open animation settles — a stray
+   (even identity) transform on an ancestor is a known cause of touch
+   scrolling silently failing inside it on iOS Safari. */
+.menu-modal.is-open .menu-modal-panel.is-settled{ transform:none; }
 
 .menu-modal-inner{
   width:100%; height:100%; max-width: 1440px; margin:0 auto;
