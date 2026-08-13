@@ -542,42 +542,54 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .sticky-book{ background: var(--c-ember); color: var(--c-milk); }
 
 /* ==========================================================================
-   Menu modal — full-screen takeover
+   Menu / booking modal — full-page takeover, native document scroll
+   ==========================================================================
+   Earlier versions used position:fixed with an internally scrolling div.
+   That combination is a well-known source of touch-scroll dead zones on
+   mobile Safari, and two rounds of targeted fixes for it didn't resolve
+   real-device reports. So instead of fighting that pattern, the modal now
+   simply replaces the page content in normal document flow — the actual
+   page/window scrolls it, which every mobile browser handles natively
+   without any of those quirks. The head + segment toggle use
+   position:sticky (also plain, native, no known mobile bugs) to stay put
+   while the body scrolls underneath.
    ========================================================================== */
-.menu-modal{
-  position: fixed; inset:0; z-index: 100;
-  display:flex;
-  opacity:0; pointer-events:none;
-  transition: opacity var(--transition);
+.menu-modal{ display:none; }
+.menu-modal.is-open{ display:block; }
+
+body.modal-open > .noise,
+body.modal-open > .site-header,
+body.modal-open > main,
+body.modal-open > .site-footer,
+body.modal-open > .sticky-actions{
+  display:none;
 }
-.menu-modal.is-open{ opacity:1; pointer-events:auto; }
-.menu-modal-scrim{
-  position:absolute; inset:0; background: var(--c-eclipse);
-}
+
 .menu-modal-panel{
-  position:relative; z-index:1;
-  width:100%; height:100%;
+  min-height: 100svh;
   background: var(--c-eclipse);
   display:flex; flex-direction:column;
-  transform: scale(.97);
-  opacity:0;
-  transition: transform var(--transition-pop), opacity var(--transition-pop);
+  animation: menuModalIn .3s cubic-bezier(.16,.8,.24,1);
 }
-.menu-modal.is-open .menu-modal-panel{ transform: scale(1); opacity:1; }
-/* Drop the lingering transform once the open animation settles — a stray
-   (even identity) transform on an ancestor is a known cause of touch
-   scrolling silently failing inside it on iOS Safari. */
-.menu-modal.is-open .menu-modal-panel.is-settled{ transform:none; }
+@keyframes menuModalIn{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
 
 .menu-modal-inner{
-  width:100%; height:100%; max-width: 1440px; margin:0 auto;
-  display:flex; flex-direction:column;
+  width:100%; max-width: 1440px; margin:0 auto;
+  display:flex; flex-direction:column; flex:1;
+}
+
+.menu-modal-sticky{
+  position:sticky; top:0; z-index:2;
+  background: var(--c-eclipse);
+  border-bottom: 1px solid rgba(255,255,255,.07);
 }
 
 .menu-modal-head{
   display:flex; align-items:center; justify-content:space-between;
   padding: 22px clamp(20px,4vw,48px) 18px;
-  border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .menu-modal-head h3{ margin:0; font-size:1.6rem; }
 .menu-modal-close{
@@ -590,7 +602,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .menu-segment{
   position: relative;
   display:flex; gap: 4px;
-  margin: 18px clamp(20px,4vw,48px) 0;
+  margin: 0 clamp(20px,4vw,48px) 18px;
   max-width: 360px;
   padding: 4px;
   background: var(--c-panel-2); border: 1px solid var(--c-graphite-line); border-radius: 999px;
@@ -610,10 +622,8 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 .menu-segment-btn.is-active{ color: var(--c-eclipse); }
 
 .menu-modal-body{
-  flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  padding: 8px clamp(20px,4vw,48px) 40px;
+  flex:1;
+  padding: 20px clamp(20px,4vw,48px) 40px;
   opacity:1; transition: opacity .2s ease;
   display:grid;
   grid-template-columns: 1fr;
@@ -629,20 +639,8 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 }
 .menu-category:first-child .menu-category-title{ margin-top: 6px; }
 
-.menu-item{
-  display:flex; gap:16px; align-items:flex-start; padding: 14px 0;
-  border-bottom: 1px dashed rgba(255,255,255,.09);
-}
+.menu-item{ padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,.09); }
 .menu-item:last-child{ border-bottom:none; }
-.menu-item-thumb{
-  flex:none; width:56px; height:56px; border-radius:8px;
-  background: linear-gradient(135deg, var(--c-panel-2), #0F1826);
-  display:flex; align-items:center; justify-content:center;
-}
-.menu-item-thumb span{
-  width:16px; height:16px; border-radius:50%; border:1.5px solid var(--c-graphite-line);
-}
-.menu-item-main{ flex:1; min-width:0; }
 .menu-item-row{ display:flex; align-items:baseline; gap:8px; }
 .menu-item-name{ color: var(--c-milk); font-size:.98rem; }
 .menu-item-leader{ flex:1; border-bottom: 1px dotted var(--c-graphite-line); transform: translateY(-4px); }
@@ -656,9 +654,7 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 
 .booking-modal-inner{ max-width: 900px; }
 .booking-modal-body{
-  flex:1; min-height:0; overflow-y:auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  flex:1;
   padding: 24px clamp(20px,4vw,48px) 40px;
 }
 .booking-modal-body iframe{ display:block; width:100%; height:900px; }
@@ -673,8 +669,6 @@ section{ position: relative; z-index:1; padding: clamp(70px, 10vw, 130px) 0; }
 @media (min-width: 1080px){
   .menu-modal-body{ grid-template-columns: repeat(3, 1fr); }
 }
-
-body.modal-open{ overflow:hidden; }
 
 /* ==========================================================================
    Responsive

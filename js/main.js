@@ -100,36 +100,40 @@
     };
   }
 
-  // A lingering (even identity) CSS transform on an ancestor is a known
-  // cause of touch scrolling silently failing inside it on iOS Safari, so
-  // once the open "pop" animation finishes, drop the transform entirely.
-  document.querySelectorAll(".menu-modal-panel").forEach(function (panel) {
-    panel.addEventListener("transitionend", function (e) {
-      if (e.target !== panel || e.propertyName !== "transform") return;
-      var parentModal = panel.closest(".menu-modal");
-      if (parentModal && parentModal.classList.contains("is-open")) {
-        panel.classList.add("is-settled");
-      }
-    });
-  });
+  // The modal replaces the page content in normal flow instead of
+  // overlaying it (see the CSS comment above .menu-modal), so opening it
+  // resets window scroll to the top of the modal and closing it needs to
+  // restore wherever the visitor was on the main page.
+  var savedScrollY = 0;
+
+  function lockPageForModal() {
+    savedScrollY = window.scrollY;
+    document.body.classList.add("modal-open");
+    window.scrollTo(0, 0);
+  }
+
+  function unlockPageAfterModal() {
+    document.body.classList.remove("modal-open");
+    window.scrollTo(0, savedScrollY);
+  }
 
   function openModal() {
+    if (modal.classList.contains("is-open")) return;
     lastFocused = document.activeElement;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
+    lockPageForModal();
     closeMobileNav();
     showSegment(activeSegment);
     requestAnimationFrame(positionSegmentIndicator);
   }
 
   function closeModal() {
+    if (!modal.classList.contains("is-open")) return;
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-    var panel = modal.querySelector(".menu-modal-panel");
-    if (panel) panel.classList.remove("is-settled");
-    if (lastFocused) lastFocused.focus();
+    unlockPageAfterModal();
+    if (lastFocused) lastFocused.focus({ preventScroll: true });
   }
 
   openTriggers.forEach(function (el) {
@@ -156,23 +160,23 @@
   var bookingLastFocused = null;
 
   function openBookingModal() {
+    if (bookingModal.classList.contains("is-open")) return;
     bookingLastFocused = document.activeElement;
     if (bookingIframe && !bookingIframe.getAttribute("src") && bookingIframe.dataset.src) {
       bookingIframe.src = bookingIframe.dataset.src;
     }
     bookingModal.classList.add("is-open");
     bookingModal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
+    lockPageForModal();
     closeMobileNav();
   }
 
   function closeBookingModal() {
+    if (!bookingModal.classList.contains("is-open")) return;
     bookingModal.classList.remove("is-open");
     bookingModal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-    var bookingPanel = bookingModal.querySelector(".menu-modal-panel");
-    if (bookingPanel) bookingPanel.classList.remove("is-settled");
-    if (bookingLastFocused) bookingLastFocused.focus();
+    unlockPageAfterModal();
+    if (bookingLastFocused) bookingLastFocused.focus({ preventScroll: true });
   }
 
   if (bookingModal) {
@@ -325,16 +329,12 @@
 
       group.items.forEach(function (item) {
         var row = el("div", "menu-item");
-        var thumb = el("div", "menu-item-thumb", "<span></span>");
-        var main = el("div", "menu-item-main");
         var nameRow = el("div", "menu-item-row");
         nameRow.appendChild(el("span", "menu-item-name", escapeHTML(item.name)));
         nameRow.appendChild(el("span", "menu-item-leader"));
         if (item.price) nameRow.appendChild(el("span", "menu-item-price", escapeHTML(item.price) + " ₽"));
-        main.appendChild(nameRow);
-        if (item.description) main.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
-        row.appendChild(thumb);
-        row.appendChild(main);
+        row.appendChild(nameRow);
+        if (item.description) row.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
         category.appendChild(row);
       });
 
