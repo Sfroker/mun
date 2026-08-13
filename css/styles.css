@@ -54,12 +54,20 @@ button{ font-family: inherit; cursor:pointer; }
 }
 .section-label.light{ color: var(--c-mineral); }
 
+/* Line — ring — line, echoing the printed bar-card's divider motif */
 .divider{
-  width: 64px;
-  height: 1px;
-  background: var(--c-ember);
-  margin: 20px auto;
+  position: relative;
+  width: 10px; height: 10px;
+  border: 1.5px solid var(--c-ember);
+  border-radius: 50%;
+  margin: 24px auto;
 }
+.divider::before, .divider::after{
+  content:''; position:absolute; top:50%; width: 56px; height:1px;
+  background: var(--c-ember); transform: translateY(-50%);
+}
+.divider::before{ right: 100%; margin-right: 10px; }
+.divider::after{ left: 100%; margin-left: 10px; }
 
 /* subtle film-grain / shadow texture overlay across the whole page */
 .noise{
