@@ -62,8 +62,10 @@
 <!-- Side slide navigation (desktop) -->
 <nav class="slide-nav" id="slide-nav" aria-label="Навигация по разделам">
   <button class="slide-dot" data-slide-target="hero" aria-label="Главная"><span></span></button>
+  <button class="slide-dot" data-slide-target="stories" aria-label="Новости и акции"><span></span></button>
   <button class="slide-dot" data-slide-target="about" aria-label="О заведении"><span></span></button>
-  <button class="slide-dot" data-slide-target="highlights" aria-label="Караоке и VIP"><span></span></button>
+  <button class="slide-dot" data-slide-target="karaoke" aria-label="Караоке-зал"><span></span></button>
+  <button class="slide-dot" data-slide-target="vip" aria-label="VIP-залы"><span></span></button>
   <button class="slide-dot" data-slide-target="menu-section" aria-label="Меню"><span></span></button>
   <button class="slide-dot" data-slide-target="gallery" aria-label="Атмосфера"><span></span></button>
   <button class="slide-dot" data-slide-target="booking" aria-label="Бронирование"><span></span></button>
@@ -143,26 +145,31 @@
         <a href="menu.html" class="btn btn-ghost">Смотреть меню</a>
       </div>
     </div>
-    <a href="#about" class="scroll-hint" aria-label="Пролистать вниз"><span></span></a>
+    <a href="#stories" class="scroll-hint" aria-label="Пролистать вниз"><span></span></a>
+  </section>
+
+  <!-- STORIES / NEWS -->
+  <section class="stories slide" id="stories">
+    <span class="slide-ghost" aria-hidden="true">01</span>
+    <div class="wrap stories-inner">
+      <p class="section-label">Новости</p>
+      <h2 class="slide-heading">Афиша и акции</h2>
+      <div class="divider"></div>
+      <div class="stories-row" id="stories-row" role="list" aria-label="Новости и акции"></div>
+    </div>
   </section>
 
   <!-- ABOUT -->
   <section class="about slide" id="about">
-    <span class="slide-ghost" aria-hidden="true">01</span>
+    <span class="slide-ghost" aria-hidden="true">02</span>
     <div class="wrap about-grid">
       <div class="about-text">
         <p class="section-label">О заведении</p>
         <h2 class="slide-heading">Авторская кухня, кальяны и атмосфера вечера без сценария</h2>
         <p data-reveal>
-          МУН — лаундж-бар в самом сердце Чебоксар, на третьем этаже ТЦ «Будайка». Здесь встречаются
-          паназиатская кухня, авторские блюда и классика бара: пробуйте поке, том-ям, фо-бо, стейки
-          и бургеры, а вечер продолжайте за кальяном и коктейлями.
-        </p>
-        <p data-reveal>
-          Тёплый свет, минимализм в деталях и внимание к каждому гостю — мы создавали МУН как
-          пространство, где комфортно и днём за обедом, и поздним вечером в компании друзей. По
-          пятницам и субботам — диджей-сеты, а для дней рождения и вечеринок — караоке-зал
-          и два VIP-зала.
+          МУН — лаундж-бар в сердце Чебоксар, на третьем этаже ТЦ «Будайка». Паназиатская
+          и авторская кухня, бар и кальянная карта, тёплый свет и внимание к каждому гостю —
+          днём за обедом и поздним вечером в компании друзей. По пятницам и субботам — диджей-сеты.
         </p>
         <ul class="about-tags" data-reveal>
           <li>Паназиатская и авторская кухня</li>
@@ -174,50 +181,56 @@
       </div>
       <div class="about-media">
         <div class="ph-block ph-1" data-reveal><span>Фото</span></div>
-        <div class="ph-block ph-2" data-reveal><span>Фото</span></div>
       </div>
     </div>
   </section>
 
   <!-- KARAOKE & VIP -->
   <section class="highlights slide" id="highlights">
-    <span class="slide-ghost" aria-hidden="true">02</span>
-    <div class="wrap">
-      <div class="highlights-intro">
-        <p class="section-label">Форматы</p>
-        <h2 class="slide-heading">Не только основной зал</h2>
-        <div class="divider"></div>
+    <span class="slide-ghost" aria-hidden="true">03</span>
+    <div class="wrap highlights-lead-inner">
+      <p class="section-label">Форматы</p>
+      <h2 class="slide-heading">Не только основной зал</h2>
+      <div class="divider"></div>
+      <p class="highlights-lead-text" data-reveal>Два формата для дней рождения, вечеринок и корпоративов</p>
+    </div>
+  </section>
+
+  <!-- KARAOKE -->
+  <section class="hall-slide slide" id="karaoke">
+    <span class="slide-ghost" aria-hidden="true">04</span>
+    <div class="wrap hall-grid">
+      <div class="ph-block hall-photo" data-reveal><span>Фото</span></div>
+      <div class="hall-text">
+        <span class="highlight-card-tag">До 40 гостей</span>
+        <h2 class="slide-heading">Караоке-зал</h2>
+        <p data-reveal>
+          Новый звук — профессиональная караоке-система и новые микрофоны.
+          Следующий шаг — визуальное обновление зала.
+        </p>
       </div>
-      <div class="highlights-grid">
-        <div class="highlight-card" data-reveal>
-          <div class="ph-block highlight-photo"><span>Фото</span></div>
-          <div class="highlight-card-body">
-            <span class="highlight-card-tag">До 40 гостей</span>
-            <h3>Караоке-зал</h3>
-            <p>
-              Новый звук — профессиональная караоке-система и новые микрофоны.
-              Следующий шаг — визуальное обновление зала.
-            </p>
-          </div>
-        </div>
-        <div class="highlight-card" data-reveal>
-          <div class="ph-block highlight-photo"><span>Фото</span></div>
-          <div class="highlight-card-body">
-            <span class="highlight-card-tag">15 и 25 мест</span>
-            <h3>VIP-залы</h3>
-            <p>
-              Два приватных зала — для дней рождения, корпоративов
-              и закрытых компаний.
-            </p>
-          </div>
-        </div>
+    </div>
+  </section>
+
+  <!-- VIP -->
+  <section class="hall-slide slide" id="vip">
+    <span class="slide-ghost" aria-hidden="true">05</span>
+    <div class="wrap hall-grid">
+      <div class="hall-text">
+        <span class="highlight-card-tag">15 и 25 мест</span>
+        <h2 class="slide-heading">VIP-залы</h2>
+        <p data-reveal>
+          Два приватных зала — для дней рождения, корпоративов
+          и закрытых компаний.
+        </p>
       </div>
+      <div class="ph-block hall-photo" data-reveal><span>Фото</span></div>
     </div>
   </section>
 
   <!-- MENU CTA -->
   <section class="menu-cta slide" id="menu-section">
-    <span class="slide-ghost" aria-hidden="true">03</span>
+    <span class="slide-ghost" aria-hidden="true">06</span>
     <div class="wrap menu-cta-inner">
       <p class="section-label light">Меню</p>
       <h2 class="slide-heading">Меню под настроение — от лёгкого ланча до вечера с друзьями</h2>
@@ -231,7 +244,7 @@
 
   <!-- GALLERY -->
   <section class="gallery slide" id="gallery">
-    <span class="slide-ghost" aria-hidden="true">04</span>
+    <span class="slide-ghost" aria-hidden="true">07</span>
     <div class="wrap gallery-wrap">
       <div class="gallery-intro">
         <p class="section-label">Атмосфера</p>
@@ -250,7 +263,7 @@
 
   <!-- BOOKING -->
   <section class="booking slide" id="booking">
-    <span class="slide-ghost" aria-hidden="true">05</span>
+    <span class="slide-ghost" aria-hidden="true">08</span>
     <div class="wrap">
       <p class="section-label">Бронирование</p>
       <h2 class="slide-heading">Забронировать стол</h2>
@@ -265,7 +278,7 @@
 
   <!-- REVIEWS -->
   <section class="menu-cta reviews slide" id="reviews">
-    <span class="slide-ghost" aria-hidden="true">06</span>
+    <span class="slide-ghost" aria-hidden="true">09</span>
     <div class="wrap menu-cta-inner">
       <div class="reviews-stars" aria-hidden="true">
         <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.7-4.3 4.1 1.1 5.8L10 14.7l-5.3 2.8 1.1-5.8L1.5 7.6l5.9-.7z"/></svg>
@@ -286,7 +299,7 @@
 
   <!-- CONTACTS -->
   <section class="contacts slide" id="contacts">
-    <span class="slide-ghost" aria-hidden="true">07</span>
+    <span class="slide-ghost" aria-hidden="true">10</span>
     <div class="wrap">
       <div class="contacts-grid">
         <div class="contacts-info">
@@ -389,6 +402,24 @@
   </div>
 </div>
 
+<!-- STORY VIEWER -->
+<div class="menu-modal story-modal" id="story-modal" aria-hidden="true">
+  <div class="menu-modal-panel story-modal-panel" role="dialog" aria-modal="true" aria-labelledby="story-title">
+    <button class="menu-modal-close story-close" data-close-story aria-label="Закрыть">&times;</button>
+    <button class="story-nav story-prev" id="story-prev" aria-label="Предыдущая история">&lsaquo;</button>
+    <button class="story-nav story-next" id="story-next" aria-label="Следующая история">&rsaquo;</button>
+    <div class="story-card" id="story-card">
+      <div class="story-progress" id="story-progress"></div>
+      <div class="story-content">
+        <h3 id="story-title"></h3>
+        <p id="story-text"></p>
+        <a class="btn btn-primary" id="story-btn" href="#"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/stories-data.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

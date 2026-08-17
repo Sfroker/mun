@@ -56,6 +56,11 @@ button{
 }
 .slide .wrap{ position:relative; z-index:1; width:100%; }
 
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
 .section-label{
   font-size: .75rem;
   letter-spacing: .25em;
@@ -483,7 +488,6 @@ section{ position: relative; z-index:1; }
   display:flex; align-items:center;
   overflow:hidden;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
   scroll-margin-top: var(--header-h);
   padding: clamp(120px, 15vw, 170px) 0 clamp(70px, 9vw, 110px);
 }
@@ -530,9 +534,6 @@ section{ position: relative; z-index:1; }
   transition-delay: .1s;
 }
 [data-reveal].is-visible{ opacity:1; transform:none; }
-.about-text p[data-reveal]:nth-of-type(2){ transition-delay: .2s; }
-.about-media [data-reveal]:nth-child(2){ transition-delay: .28s; }
-.highlights-grid [data-reveal]:nth-child(2){ transition-delay: .22s; }
 .gallery-grid [data-reveal]:nth-child(2){ transition-delay: .1s; }
 .gallery-grid [data-reveal]:nth-child(3){ transition-delay: .16s; }
 .gallery-grid [data-reveal]:nth-child(4){ transition-delay: .22s; }
@@ -557,15 +558,112 @@ section{ position: relative; z-index:1; }
 
 .about-media{ display:grid; gap: 16px; }
 
-/* Karaoke & VIP highlight cards */
-.highlights-intro{ text-align:center; margin-bottom: 40px; }
-.highlights-intro .slide-heading{ margin-left:auto; margin-right:auto; }
-.highlights-grid{
-  display:grid; grid-template-columns: 1fr 1fr; gap: 32px;
+/* Stories / news slide — circular "story" avatars, click opens the
+   vertical story viewer modal below */
+.stories-inner{ text-align:center; max-width: 900px; margin: 0 auto; }
+.stories-inner .slide-heading{ margin-left:auto; margin-right:auto; }
+.stories-row{
+  display:flex; flex-wrap:wrap; justify-content:center; gap: 22px 26px;
+  margin-top: 28px;
 }
-.highlight-card{ display:flex; flex-direction:column; text-align:center; }
-.highlight-photo{ aspect-ratio: 16/10; margin-bottom: 20px; }
-.highlight-card-body{ display:flex; flex-direction:column; align-items:center; }
+.story-circle{
+  display:flex; flex-direction:column; align-items:center; gap: 10px;
+  width: 92px; background:none; border:none; padding:0;
+}
+.story-ring{
+  width: 76px; height:76px; border-radius:50%; padding: 3px;
+  background: linear-gradient(135deg, var(--c-ember), var(--c-mineral));
+  display:flex; align-items:center; justify-content:center;
+  transition: transform var(--transition);
+}
+.story-circle:hover .story-ring{ transform: scale(1.06); }
+.story-thumb{
+  width:100%; height:100%; border-radius:50%;
+  border: 2px solid var(--c-eclipse);
+}
+.story-thumb.tint-ember{ background: radial-gradient(circle at 32% 24%, #e8965c, #b84b2f 60%, #5c2013 100%); }
+.story-thumb.tint-mineral{ background: radial-gradient(circle at 32% 24%, #e8ded0, #9099ac 62%, #333b4d 100%); }
+.story-thumb.tint-graphite{ background: radial-gradient(circle at 32% 24%, #9099ac, #333b4d 62%, #0d1420 100%); }
+.story-label{
+  font-size:.72rem; letter-spacing:.02em; color: var(--c-mineral); line-height:1.3;
+}
+
+/* Story viewer */
+.story-modal-panel{
+  min-height: 100svh;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+  padding: 24px;
+}
+.story-close{ position:absolute; top:18px; right: clamp(18px,4vw,32px); z-index:3; }
+.story-nav{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:44px; height:44px; border-radius:50%;
+  background: rgba(255,255,255,.06); color: var(--c-milk);
+  font-size:1.7rem; line-height:1; display:flex; align-items:center; justify-content:center;
+  z-index:3; transition: background var(--transition);
+}
+.story-nav:hover{ background: rgba(255,255,255,.14); }
+.story-prev{ left: clamp(6px,3vw,28px); }
+.story-next{ right: clamp(6px,3vw,28px); }
+
+.story-card{
+  position:relative;
+  width: min(420px, 92vw);
+  aspect-ratio: 9/16;
+  max-height: 88svh;
+  border-radius: 14px;
+  overflow:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  background: var(--c-panel-2);
+  box-shadow: 0 30px 70px rgba(0,0,0,.5);
+}
+.story-card.tint-ember{ background: radial-gradient(circle at 30% 22%, rgba(232,150,92,.55), rgba(184,75,47,.5) 45%, #180d09 88%), var(--c-eclipse); }
+.story-card.tint-mineral{ background: radial-gradient(circle at 30% 22%, rgba(232,222,208,.35), rgba(144,153,172,.35) 45%, #0f131c 88%), var(--c-eclipse); }
+.story-card.tint-graphite{ background: radial-gradient(circle at 30% 22%, rgba(144,153,172,.4), rgba(24,35,56,.6) 45%, #060810 88%), var(--c-eclipse); }
+
+.story-progress{
+  position:absolute; top:14px; left:14px; right:14px; z-index:2;
+  display:flex; gap:6px;
+}
+.story-progress span{
+  flex:1; height:3px; border-radius:999px; background: rgba(255,255,255,.25); overflow:hidden;
+}
+.story-progress span::after{ content:''; display:block; height:100%; width:0; background: var(--c-milk); }
+.story-progress span.is-done::after, .story-progress span.is-current::after{ width:100%; }
+
+.story-content{
+  position:relative; z-index:1;
+  padding: 30px clamp(20px,5vw,32px) clamp(28px,6vw,36px);
+  background: linear-gradient(to top, rgba(7,10,18,.9), rgba(7,10,18,.15) 68%, transparent);
+}
+.story-content h3{ font-size: clamp(1.4rem, 3vw, 1.8rem); margin: 0 0 10px; }
+.story-content p{ color: var(--c-mineral); margin: 0 0 22px; font-size:.92rem; }
+.story-content .btn{ width:100%; }
+
+@media (max-width: 600px){
+  .story-modal-panel{ padding: 14px; }
+  .story-card{ width:100%; max-height: 92svh; }
+}
+
+/* Formats intro — short transitional slide before the dedicated
+   Karaoke/VIP slides */
+.highlights-lead-inner{ text-align:center; max-width: 620px; margin: 0 auto; }
+.highlights-lead-inner .slide-heading{ margin-left:auto; margin-right:auto; }
+.highlights-lead-text{
+  font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--c-mineral);
+  margin-top: 6px;
+}
+
+/* Karaoke & VIP — each gets its own full slide for emphasis, photo and
+   text side by side (order alternates between the two for rhythm) */
+.hall-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items:center;
+}
+.hall-photo{ aspect-ratio: 4/5; }
+.hall-text .slide-heading{ margin-bottom: 14px; }
+.hall-text p{ margin:0; max-width: 46ch; }
 .highlight-card-tag{
   display:inline-block;
   font-size:.7rem; letter-spacing:.15em; text-transform:uppercase;
@@ -573,8 +671,6 @@ section{ position: relative; z-index:1; }
   background: rgba(184,75,47,.1);
   padding: 7px 14px; border-radius: 999px; margin-bottom: 14px;
 }
-.highlight-card h3{ font-size: clamp(1.25rem, 2.1vw, 1.6rem); margin: 0 0 8px; }
-.highlight-card p{ margin:0; max-width: 42ch; }
 
 /* placeholder photo blocks */
 .ph-block{
@@ -598,7 +694,6 @@ section{ position: relative; z-index:1; }
 }
 .ph-block:hover span{ border-color: var(--c-ember); color: var(--c-mineral); }
 .about-media .ph-1{ aspect-ratio: 4/5; }
-.about-media .ph-2{ aspect-ratio: 16/9; }
 
 /* Menu CTA / Reviews band */
 .menu-cta{
@@ -679,9 +774,7 @@ section{ position: relative; z-index:1; }
   padding: clamp(130px, 16vw, 180px) 0 40px;
   text-align: center;
 }
-.menu-page-head .section-label{ text-align:center; }
-.menu-page-head h1{ font-size: clamp(2.1rem, 5vw, 3.4rem); }
-.menu-page-intro{ max-width: 56ch; margin: 0 auto 30px; }
+.menu-page-intro{ max-width: 56ch; margin: 0 auto 30px; font-family: var(--font-display); font-style: italic; font-size: clamp(1.1rem, 2.2vw, 1.4rem); color: var(--c-milk); }
 .menu-page-head .menu-segment{ margin-left:auto; margin-right:auto; }
 
 .menu-page-list{ padding: 8px 0 clamp(90px, 10vw, 130px); }
@@ -911,7 +1004,7 @@ body.modal-open > .sticky-actions{
 .cart-modal-body{ flex:1; padding: 24px clamp(20px,4vw,48px) 8px; }
 .cart-empty{ color: var(--c-graphite); text-align:center; padding: 60px 0; }
 .cart-item{
-  display:flex; align-items:center; justify-content:space-between; gap: 14px;
+  display:grid; grid-template-columns: 1fr auto auto; align-items:center; gap: 14px;
   padding: 16px 0; border-bottom: 1px dashed rgba(255,255,255,.09);
 }
 .cart-item:last-child{ border-bottom:none; }
@@ -963,10 +1056,10 @@ body.modal-open > .sticky-actions{
 
   .slide{ padding: clamp(100px, 20vw, 130px) 0 60px; }
 
-  .about-grid, .contacts-grid{ grid-template-columns: 1fr; gap: 36px; }
-  .highlights-grid{ grid-template-columns: 1fr; gap: 36px; }
-  .about-media{ grid-template-columns: 1fr 1fr; }
-  .about-media .ph-1, .about-media .ph-2{ aspect-ratio: 1/1; }
+  .about-grid, .contacts-grid{ grid-template-columns: 1fr; gap: 28px; }
+  .about-media .ph-1{ aspect-ratio: 16/9; }
+  .hall-grid{ grid-template-columns: 1fr; gap: 24px; }
+  .hall-photo{ aspect-ratio: 16/9; }
 
   .gallery-grid{ grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .gallery-grid .g1, .gallery-grid .g4{ grid-column: span 1; grid-row: span 1; aspect-ratio: 1/1; }

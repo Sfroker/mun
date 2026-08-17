@@ -87,6 +87,117 @@
   }
 
   /* ------------------------------------------------------------------
+   * Stories — pinned news/promo circles; clicking one opens a vertical
+   * story viewer (reuses the same full-page-takeover modal pattern as
+   * booking, so it's exempt from the mobile touch-scroll issues that
+   * pattern was specifically built to avoid).
+   * ------------------------------------------------------------------ */
+  var storiesData = window.MUN_STORIES || [];
+  var storiesRow = document.getElementById("stories-row");
+  var storyModal = document.getElementById("story-modal");
+  var storyCard = document.getElementById("story-card");
+  var storyProgress = document.getElementById("story-progress");
+  var storyTitle = document.getElementById("story-title");
+  var storyText = document.getElementById("story-text");
+  var storyBtn = document.getElementById("story-btn");
+  var storyPrevBtn = document.getElementById("story-prev");
+  var storyNextBtn = document.getElementById("story-next");
+  var storyCloseTriggers = document.querySelectorAll("[data-close-story]");
+  var storyLastFocused = null;
+  var activeStoryIndex = 0;
+
+  if (storiesRow && storiesData.length) {
+    storiesData.forEach(function (story, i) {
+      var btn = document.createElement("button");
+      btn.className = "story-circle";
+      btn.type = "button";
+      btn.setAttribute("role", "listitem");
+      btn.setAttribute("aria-label", story.label);
+      btn.innerHTML =
+        '<span class="story-ring"><span class="story-thumb tint-' + (story.tint || "ember") + '"></span></span>' +
+        '<span class="story-label">' + escapeHTML(story.label) + "</span>";
+      btn.addEventListener("click", function () { openStoryModal(i); });
+      storiesRow.appendChild(btn);
+    });
+  }
+
+  function escapeHTML(str) {
+    var d = document.createElement("div");
+    d.textContent = str == null ? "" : str;
+    return d.innerHTML;
+  }
+
+  function renderStory(index) {
+    var story = storiesData[index];
+    if (!story) return;
+    activeStoryIndex = index;
+
+    storyCard.className = "story-card tint-" + (story.tint || "ember");
+    storyTitle.textContent = story.title;
+    storyText.textContent = story.text;
+    if (story.buttonText && story.buttonHref) {
+      storyBtn.textContent = story.buttonText;
+      storyBtn.href = story.buttonHref;
+      storyBtn.style.display = "";
+    } else {
+      storyBtn.style.display = "none";
+    }
+
+    storyProgress.innerHTML = "";
+    storiesData.forEach(function (s, i) {
+      var seg = document.createElement("span");
+      if (i < index) seg.className = "is-done";
+      else if (i === index) seg.className = "is-current";
+      storyProgress.appendChild(seg);
+    });
+
+    if (storyPrevBtn) storyPrevBtn.style.visibility = index === 0 ? "hidden" : "visible";
+    if (storyNextBtn) storyNextBtn.style.visibility = index === storiesData.length - 1 ? "hidden" : "visible";
+  }
+
+  function openStoryModal(index) {
+    if (!storyModal || storyModal.classList.contains("is-open")) return;
+    storyLastFocused = document.activeElement;
+    renderStory(index);
+    storyModal.classList.add("is-open");
+    storyModal.setAttribute("aria-hidden", "false");
+    lockPageForModal();
+    closeMobileNav();
+  }
+
+  function closeStoryModal() {
+    if (!storyModal || !storyModal.classList.contains("is-open")) return;
+    storyModal.classList.remove("is-open");
+    storyModal.setAttribute("aria-hidden", "true");
+    unlockPageAfterModal();
+    if (storyLastFocused) storyLastFocused.focus({ preventScroll: true });
+  }
+
+  if (storyPrevBtn) {
+    storyPrevBtn.addEventListener("click", function () {
+      if (activeStoryIndex > 0) renderStory(activeStoryIndex - 1);
+    });
+  }
+  if (storyNextBtn) {
+    storyNextBtn.addEventListener("click", function () {
+      if (activeStoryIndex < storiesData.length - 1) renderStory(activeStoryIndex + 1);
+    });
+  }
+  storyCloseTriggers.forEach(function (el) { el.addEventListener("click", closeStoryModal); });
+  if (storyModal) {
+    document.addEventListener("keydown", function (e) {
+      if (!storyModal.classList.contains("is-open")) return;
+      if (e.key === "Escape") closeStoryModal();
+      else if (e.key === "ArrowLeft" && activeStoryIndex > 0) renderStory(activeStoryIndex - 1);
+      else if (e.key === "ArrowRight" && activeStoryIndex < storiesData.length - 1) renderStory(activeStoryIndex + 1);
+    });
+    // Click on the dark backdrop (outside the card) also closes it.
+    storyModal.addEventListener("click", function (e) {
+      if (e.target === storyModal || e.target.classList.contains("story-modal-panel")) closeStoryModal();
+    });
+  }
+
+  /* ------------------------------------------------------------------
    * Slides — full-screen sections. Tracks which one is currently most
    * visible so its heading/ghost numeral can animate in (replayably,
    * unlike the one-shot [data-reveal] items below), and drives the header
@@ -159,22 +270,29 @@
   }
 
   /* ------------------------------------------------------------------
-   * Mobile sticky action bar — appears once the hero is scrolled past
+   * Mobile sticky action bar — appears once the hero is scrolled past.
+   * Driven directly off scroll position (rAF-throttled) rather than
+   * IntersectionObserver: with scroll-snap in play, an IO callback can
+   * lag a frame behind a fast snap animation, which read as "the bar
+   * doesn't show until you scroll again." A plain scrollY check has no
+   * such timing gap.
    * ------------------------------------------------------------------ */
   var stickyActions = document.querySelector(".sticky-actions");
   var heroSection = document.querySelector(".hero");
 
   if (stickyActions && heroSection) {
-    if ("IntersectionObserver" in window) {
-      var stickyObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          stickyActions.classList.toggle("is-visible", !entry.isIntersecting);
-        });
-      }, { threshold: 0 });
-      stickyObserver.observe(heroSection);
-    } else {
-      stickyActions.classList.add("is-visible");
+    var stickyTicking = false;
+    function updateStickyActions() {
+      stickyTicking = false;
+      var pastHero = window.scrollY >= heroSection.offsetHeight - 4;
+      stickyActions.classList.toggle("is-visible", pastHero);
     }
+    window.addEventListener("scroll", function () {
+      if (stickyTicking) return;
+      stickyTicking = true;
+      requestAnimationFrame(updateStickyActions);
+    }, { passive: true });
+    updateStickyActions();
   }
 
   /* ------------------------------------------------------------------
