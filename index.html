@@ -31,7 +31,7 @@
 
     <nav class="main-nav" id="main-nav">
       <a href="#about">О нас</a>
-      <a href="#menu-section" data-open-menu>Меню</a>
+      <a href="menu.html">Меню</a>
       <a href="#gallery">Атмосфера</a>
       <a href="#booking" data-open-booking>Бронирование</a>
       <a href="#reviews">Отзывы</a>
@@ -50,7 +50,7 @@
 
   <div class="mobile-nav" id="mobile-nav">
     <a href="#about">О нас</a>
-    <a href="#menu-section" data-open-menu>Меню</a>
+    <a href="menu.html">Меню</a>
     <a href="#gallery">Атмосфера</a>
     <a href="#booking" data-open-booking>Бронирование</a>
     <a href="#reviews">Отзывы</a>
@@ -140,7 +140,7 @@
       <p class="hero-tagline">Место, где есть ваш сценарий вечера</p>
       <div class="hero-actions">
         <a href="#booking" class="btn btn-primary" data-open-booking>Забронировать стол</a>
-        <button class="btn btn-ghost" data-open-menu>Смотреть меню</button>
+        <a href="menu.html" class="btn btn-ghost">Смотреть меню</a>
       </div>
     </div>
     <a href="#about" class="scroll-hint" aria-label="Пролистать вниз"><span></span></a>
@@ -223,9 +223,9 @@
       <h2 class="slide-heading">Меню под настроение — от лёгкого ланча до вечера с друзьями</h2>
       <p class="menu-cta-text" data-reveal>
         Полное меню всегда актуально — обновляем позиции и цены прямо в таблице,
-        а на сайте оно открывается одним нажатием.
+        а на сайте у него теперь отдельная страница.
       </p>
-      <button class="btn btn-primary" data-open-menu data-reveal>Открыть меню</button>
+      <a href="menu.html" class="btn btn-primary" data-reveal>Открыть меню</a>
     </div>
   </section>
 
@@ -362,36 +362,6 @@
   <a href="#booking" class="sticky-btn sticky-book" data-open-booking>Забронировать</a>
 </div>
 
-<!-- Floating cart bar — shows once at least one menu item is added -->
-<button class="cart-bar" id="cart-bar" type="button">
-  <span class="cart-bar-label">Заказ</span>
-  <span class="cart-bar-count" id="cart-bar-count">0</span>
-  <span class="cart-bar-total" id="cart-bar-total">0 ₽</span>
-</button>
-
-<!-- MENU MODAL -->
-<div class="menu-modal" id="menu-modal" aria-hidden="true">
-  <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
-    <div class="menu-modal-inner">
-      <div class="menu-modal-sticky">
-        <div class="menu-modal-head">
-          <h3 id="menu-modal-title">Меню МУН</h3>
-          <button class="menu-modal-close" data-close-menu aria-label="Закрыть меню">&times;</button>
-        </div>
-        <div class="menu-segment" id="menu-segment">
-          <span class="menu-segment-indicator" id="menu-segment-indicator" aria-hidden="true"></span>
-          <button class="menu-segment-btn is-active" type="button" data-segment="food">Кухня</button>
-          <button class="menu-segment-btn" type="button" data-segment="bar">Бар</button>
-        </div>
-      </div>
-      <div class="menu-modal-body" id="menu-body">
-        <p class="menu-loading">Загружаем меню…</p>
-      </div>
-      <p class="menu-note" id="menu-note"></p>
-    </div>
-  </div>
-</div>
-
 <!-- BOOKING MODAL -->
 <div class="menu-modal" id="booking-modal" aria-hidden="true">
   <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
@@ -419,33 +389,6 @@
   </div>
 </div>
 
-<!-- CART MODAL -->
-<div class="menu-modal" id="cart-modal" aria-hidden="true">
-  <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
-    <div class="menu-modal-inner cart-modal-inner">
-      <div class="menu-modal-sticky">
-        <div class="menu-modal-head">
-          <h3 id="cart-modal-title">Ваш заказ</h3>
-          <button class="menu-modal-close" data-close-cart aria-label="Закрыть заказ">&times;</button>
-        </div>
-      </div>
-      <div class="cart-modal-body" id="cart-body"></div>
-      <div class="cart-modal-footer">
-        <div class="cart-total-row">
-          <span>Итого</span>
-          <span id="cart-total-amount">0 ₽</span>
-        </div>
-        <p class="cart-hint">Покажите этот список официанту, чтобы сделать заказ.</p>
-        <div class="cart-modal-actions">
-          <button class="btn btn-primary" type="button" id="cart-back-to-menu">Вернуться в меню</button>
-          <button class="btn btn-outline" type="button" id="cart-clear">Очистить заказ</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="js/menu-data.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

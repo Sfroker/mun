@@ -666,6 +666,43 @@ section{ position: relative; z-index:1; }
 }
 
 /* ==========================================================================
+   Menu page (menu.html) — the menu used to live in a popup; it's now a
+   real page of its own, so this is plain document flow throughout (no
+   modal takeover, no locked scroll) with the site's usual sticky header.
+   ========================================================================== */
+.menu-page-head{
+  padding: clamp(130px, 16vw, 180px) 0 40px;
+  text-align: center;
+}
+.menu-page-head .section-label{ text-align:center; }
+.menu-page-head h1{ font-size: clamp(2.1rem, 5vw, 3.4rem); }
+.menu-page-intro{ max-width: 56ch; margin: 0 auto 30px; }
+.menu-page-head .menu-segment{ margin-left:auto; margin-right:auto; }
+
+.menu-page-list{ padding: 8px 0 clamp(90px, 10vw, 130px); }
+
+.cart-view{ padding: clamp(130px, 16vw, 180px) 0 clamp(70px, 9vw, 110px); min-height: 100svh; }
+.cart-view-inner{ max-width: 720px; }
+.cart-view-head{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 8px; padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.cart-view-head h2{ margin:0; font-size: 1.6rem; }
+
+.menu-page-footer{
+  padding: 50px 0 clamp(90px, 10vw, 110px);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.menu-page-footer .wrap{
+  display:flex; flex-direction:column; align-items:center; gap: 20px; text-align:center;
+}
+.menu-page-footer-info{
+  display:flex; gap: 20px; flex-wrap:wrap; justify-content:center;
+  font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--c-graphite);
+}
+
+/* ==========================================================================
    Mobile sticky action bar
    ========================================================================== */
 .sticky-actions{
@@ -690,9 +727,9 @@ section{ position: relative; z-index:1; }
 .sticky-book{ background: var(--c-ember); color: var(--c-milk); }
 
 /* ==========================================================================
-   Floating cart bar — the "one place" summary of everything added from the
-   menu, so a guest can hand the total + list to a waiter. Visible on the
-   main site and inside the menu modal; hidden inside booking/cart modals.
+   Floating cart bar — lives only on menu.html, the "one place" summary of
+   everything added from the menu, so a guest can hand the total + list to
+   a waiter. Hidden while the order view itself is open (redundant there).
    ========================================================================== */
 .cart-bar{
   display:flex; align-items:center; gap: 12px;
@@ -713,8 +750,7 @@ section{ position: relative; z-index:1; }
 }
 .cart-bar-total{ font-weight:500; letter-spacing:.02em; }
 @media (max-width: 760px){
-  .cart-bar{ bottom: calc(84px + env(safe-area-inset-bottom)); padding: 13px 20px; }
-  body.modal-open .cart-bar{ bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .cart-bar{ bottom: calc(16px + env(safe-area-inset-bottom)); padding: 13px 20px; }
 }
 
 /* ==========================================================================
