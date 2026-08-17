@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   /* ------------------------------------------------------------------
    * Google Sheets menu source
    * ------------------------------------------------------------------
@@ -401,10 +403,60 @@
   }
 
   /* ------------------------------------------------------------------
+   * Slides — full-screen sections. Tracks which one is currently most
+   * visible so its heading/ghost numeral can animate in (replayably,
+   * unlike the one-shot [data-reveal] items below), and drives the header
+   * logo's "moon phase" — the eclipse shadow recedes as you move deeper
+   * into the page, so the mark reads as fully hidden on the hero and
+   * fully whole by the time you reach the contacts slide.
+   * ------------------------------------------------------------------ */
+  var slideEls = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var slideDots = document.querySelectorAll(".slide-dot");
+  var slideRatios = new Map();
+
+  function updateActiveSlide() {
+    var best = null;
+    var bestRatio = 0;
+    slideEls.forEach(function (s) {
+      var r = slideRatios.get(s) || 0;
+      if (r > bestRatio) { bestRatio = r; best = s; }
+    });
+    if (!best) return;
+    var idx = slideEls.indexOf(best);
+    slideEls.forEach(function (s) { s.classList.toggle("is-active", s === best); });
+    slideDots.forEach(function (d) {
+      d.classList.toggle("is-active", d.getAttribute("data-slide-target") === best.id);
+    });
+    var phase = slideEls.length > 1 ? idx / (slideEls.length - 1) : 1;
+    document.documentElement.style.setProperty("--moon-phase", phase.toFixed(3));
+  }
+
+  if (slideEls.length) {
+    if ("IntersectionObserver" in window) {
+      var slideObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          slideRatios.set(entry.target, entry.intersectionRatio);
+        });
+        updateActiveSlide();
+      }, { threshold: [0, .15, .3, .45, .6, .75, .9, 1] });
+      slideEls.forEach(function (s) { slideObserver.observe(s); });
+    } else {
+      slideEls.forEach(function (s) { s.classList.add("is-active"); });
+      document.documentElement.style.setProperty("--moon-phase", "1");
+    }
+  }
+
+  slideDots.forEach(function (dot) {
+    dot.addEventListener("click", function () {
+      var targetEl = document.getElementById(dot.getAttribute("data-slide-target"));
+      if (targetEl) targetEl.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+    });
+  });
+
+  /* ------------------------------------------------------------------
    * Scroll reveal
    * ------------------------------------------------------------------ */
   var revealTargets = document.querySelectorAll("[data-reveal]");
-  var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (revealTargets.length) {
     if (prefersReducedMotion || !("IntersectionObserver" in window)) {

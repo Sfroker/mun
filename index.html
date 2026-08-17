@@ -23,10 +23,13 @@
 
 <div class="noise" aria-hidden="true"></div>
 
-<header class="site-header" id="top">
+<header class="site-header">
   <div class="wrap header-row">
-    <a href="#top" class="logo" aria-label="МУН — на главную">
-      <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
+    <a href="#hero" class="logo" aria-label="МУН — на главную">
+      <span class="logo-phase">
+        <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
+        <span class="logo-phase-shadow" aria-hidden="true"></span>
+      </span>
     </a>
 
     <nav class="main-nav" id="main-nav">
@@ -59,10 +62,22 @@
   </div>
 </header>
 
-<main>
+<!-- Side slide navigation (desktop) -->
+<nav class="slide-nav" id="slide-nav" aria-label="Навигация по разделам">
+  <button class="slide-dot" data-slide-target="hero" aria-label="Главная"><span></span></button>
+  <button class="slide-dot" data-slide-target="about" aria-label="О заведении"><span></span></button>
+  <button class="slide-dot" data-slide-target="highlights" aria-label="Караоке и VIP"><span></span></button>
+  <button class="slide-dot" data-slide-target="menu-section" aria-label="Меню"><span></span></button>
+  <button class="slide-dot" data-slide-target="gallery" aria-label="Атмосфера"><span></span></button>
+  <button class="slide-dot" data-slide-target="booking" aria-label="Бронирование"><span></span></button>
+  <button class="slide-dot" data-slide-target="reviews" aria-label="Отзывы"><span></span></button>
+  <button class="slide-dot" data-slide-target="contacts" aria-label="Контакты"><span></span></button>
+</nav>
+
+<main class="slides" id="slides">
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero slide" id="hero">
     <div class="hero-bg" aria-hidden="true"></div>
     <svg class="hero-sky" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
@@ -135,23 +150,24 @@
   </section>
 
   <!-- ABOUT -->
-  <section class="about" id="about">
+  <section class="about slide" id="about">
+    <span class="slide-ghost" aria-hidden="true">01</span>
     <div class="wrap about-grid">
-      <div class="about-text" data-reveal>
+      <div class="about-text">
         <p class="section-label">О заведении</p>
-        <h2>Авторская кухня, кальяны и атмосфера вечера без сценария</h2>
-        <p>
+        <h2 class="slide-heading">Авторская кухня, кальяны и атмосфера вечера без сценария</h2>
+        <p data-reveal>
           МУН — лаундж-бар в самом сердце Чебоксар, на третьем этаже ТЦ «Будайка». Здесь встречаются
           паназиатская кухня, авторские блюда и классика бара: пробуйте поке, том-ям, фо-бо, стейки
           и бургеры, а вечер продолжайте за кальяном и коктейлями.
         </p>
-        <p>
+        <p data-reveal>
           Тёплый свет, минимализм в деталях и внимание к каждому гостю — мы создавали МУН как
           пространство, где комфортно и днём за обедом, и поздним вечером в компании друзей. По
           пятницам и субботам — диджей-сеты, а для дней рождения и вечеринок — караоке-зал
           и два VIP-зала.
         </p>
-        <ul class="about-tags">
+        <ul class="about-tags" data-reveal>
           <li>Паназиатская и авторская кухня</li>
           <li>Кальянная карта</li>
           <li>Бар и коктейли</li>
@@ -167,84 +183,93 @@
   </section>
 
   <!-- KARAOKE & VIP -->
-  <section class="highlights" id="highlights">
-    <div class="wrap" data-reveal>
-      <p class="section-label">Форматы</p>
-      <h2>Не только основной зал</h2>
-      <div class="divider"></div>
-    </div>
-    <div class="wrap highlights-grid">
-      <div class="highlight-card" data-reveal>
-        <div class="ph-block highlight-photo"><span>Фото</span></div>
-        <div class="highlight-card-body">
-          <span class="highlight-card-tag">До 40 гостей</span>
-          <h3>Караоке-зал</h3>
-          <p>
-            Новый звук — профессиональная караоке-система и новые микрофоны.
-            Следующий шаг — визуальное обновление зала.
-          </p>
-        </div>
+  <section class="highlights slide" id="highlights">
+    <span class="slide-ghost" aria-hidden="true">02</span>
+    <div class="wrap">
+      <div class="highlights-intro">
+        <p class="section-label">Форматы</p>
+        <h2 class="slide-heading">Не только основной зал</h2>
+        <div class="divider"></div>
       </div>
-      <div class="highlight-card" data-reveal>
-        <div class="ph-block highlight-photo"><span>Фото</span></div>
-        <div class="highlight-card-body">
-          <span class="highlight-card-tag">15 и 25 мест</span>
-          <h3>VIP-залы</h3>
-          <p>
-            Два приватных зала — для дней рождения, корпоративов
-            и закрытых компаний.
-          </p>
+      <div class="highlights-grid">
+        <div class="highlight-card" data-reveal>
+          <div class="ph-block highlight-photo"><span>Фото</span></div>
+          <div class="highlight-card-body">
+            <span class="highlight-card-tag">До 40 гостей</span>
+            <h3>Караоке-зал</h3>
+            <p>
+              Новый звук — профессиональная караоке-система и новые микрофоны.
+              Следующий шаг — визуальное обновление зала.
+            </p>
+          </div>
+        </div>
+        <div class="highlight-card" data-reveal>
+          <div class="ph-block highlight-photo"><span>Фото</span></div>
+          <div class="highlight-card-body">
+            <span class="highlight-card-tag">15 и 25 мест</span>
+            <h3>VIP-залы</h3>
+            <p>
+              Два приватных зала — для дней рождения, корпоративов
+              и закрытых компаний.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- MENU CTA -->
-  <section class="menu-cta" id="menu-section">
-    <div class="wrap menu-cta-inner" data-reveal>
+  <section class="menu-cta slide" id="menu-section">
+    <span class="slide-ghost" aria-hidden="true">03</span>
+    <div class="wrap menu-cta-inner">
       <p class="section-label light">Меню</p>
-      <h2>Меню под настроение — от лёгкого ланча до вечера с друзьями</h2>
-      <p class="menu-cta-text">
+      <h2 class="slide-heading">Меню под настроение — от лёгкого ланча до вечера с друзьями</h2>
+      <p class="menu-cta-text" data-reveal>
         Полное меню всегда актуально — обновляем позиции и цены прямо в таблице,
         а на сайте оно открывается одним нажатием.
       </p>
-      <button class="btn btn-primary" data-open-menu>Открыть меню</button>
+      <button class="btn btn-primary" data-open-menu data-reveal>Открыть меню</button>
     </div>
   </section>
 
   <!-- GALLERY -->
-  <section class="gallery" id="gallery">
-    <div class="wrap" data-reveal>
-      <p class="section-label">Атмосфера</p>
-      <h2>МУН в деталях</h2>
-    </div>
-    <div class="gallery-grid">
-      <div class="ph-block g1" data-reveal><span>Фото</span></div>
-      <div class="ph-block g2" data-reveal><span>Фото</span></div>
-      <div class="ph-block g3" data-reveal><span>Фото</span></div>
-      <div class="ph-block g4" data-reveal><span>Фото</span></div>
-      <div class="ph-block g5" data-reveal><span>Фото</span></div>
-      <div class="ph-block g6" data-reveal><span>Фото</span></div>
+  <section class="gallery slide" id="gallery">
+    <span class="slide-ghost" aria-hidden="true">04</span>
+    <div class="wrap gallery-wrap">
+      <div class="gallery-intro">
+        <p class="section-label">Атмосфера</p>
+        <h2 class="slide-heading">МУН в деталях</h2>
+      </div>
+      <div class="gallery-grid">
+        <div class="ph-block g1" data-reveal><span>Фото</span></div>
+        <div class="ph-block g2" data-reveal><span>Фото</span></div>
+        <div class="ph-block g3" data-reveal><span>Фото</span></div>
+        <div class="ph-block g4" data-reveal><span>Фото</span></div>
+        <div class="ph-block g5" data-reveal><span>Фото</span></div>
+        <div class="ph-block g6" data-reveal><span>Фото</span></div>
+      </div>
     </div>
   </section>
 
   <!-- BOOKING -->
-  <section class="booking" id="booking">
-    <div class="wrap" data-reveal>
+  <section class="booking slide" id="booking">
+    <span class="slide-ghost" aria-hidden="true">05</span>
+    <div class="wrap">
       <p class="section-label">Бронирование</p>
-      <h2>Забронировать стол</h2>
-      <p class="booking-text">
+      <h2 class="slide-heading">Забронировать стол</h2>
+      <p class="booking-text" data-reveal>
         Выберите дату, время и количество гостей — подтверждение придёт автоматически.
         Если форма не загрузилась, воспользуйтесь
         <a href="https://restoza.ru/book/moon-magic" target="_blank" rel="noopener">прямой ссылкой</a>.
       </p>
-      <button class="btn btn-primary" data-open-booking>Забронировать стол</button>
+      <button class="btn btn-primary" data-open-booking data-reveal>Забронировать стол</button>
     </div>
   </section>
 
   <!-- REVIEWS -->
-  <section class="menu-cta reviews" id="reviews">
-    <div class="wrap menu-cta-inner" data-reveal>
+  <section class="menu-cta reviews slide" id="reviews">
+    <span class="slide-ghost" aria-hidden="true">06</span>
+    <div class="wrap menu-cta-inner">
       <div class="reviews-stars" aria-hidden="true">
         <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.7-4.3 4.1 1.1 5.8L10 14.7l-5.3 2.8 1.1-5.8L1.5 7.6l5.9-.7z"/></svg>
         <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.7-4.3 4.1 1.1 5.8L10 14.7l-5.3 2.8 1.1-5.8L1.5 7.6l5.9-.7z"/></svg>
@@ -253,82 +278,86 @@
         <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.7-4.3 4.1 1.1 5.8L10 14.7l-5.3 2.8 1.1-5.8L1.5 7.6l5.9-.7z"/></svg>
       </div>
       <p class="section-label light">Отзывы</p>
-      <h2>Понравилось у нас?</h2>
-      <p class="menu-cta-text">
+      <h2 class="slide-heading">Понравилось у нас?</h2>
+      <p class="menu-cta-text" data-reveal>
         Будем рады, если вы поделитесь впечатлениями — это помогает нам становиться лучше
         и важно для других гостей.
       </p>
-      <a class="btn btn-primary" href="https://toweco.ru/location?qr=86WAykPCQ6RdUlmC" target="_blank" rel="noopener">Оставить отзыв</a>
+      <a class="btn btn-primary" href="https://toweco.ru/location?qr=86WAykPCQ6RdUlmC" target="_blank" rel="noopener" data-reveal>Оставить отзыв</a>
     </div>
   </section>
 
   <!-- CONTACTS -->
-  <section class="contacts" id="contacts">
-    <div class="wrap contacts-grid">
-      <div class="contacts-info" data-reveal>
-        <p class="section-label light">Контакты</p>
-        <h2>Как нас найти</h2>
+  <section class="contacts slide" id="contacts">
+    <span class="slide-ghost" aria-hidden="true">07</span>
+    <div class="wrap">
+      <div class="contacts-grid">
+        <div class="contacts-info">
+          <p class="section-label light">Контакты</p>
+          <h2 class="slide-heading">Как нас найти</h2>
 
-        <dl class="contact-list">
-          <div>
-            <dt>Адрес</dt>
-            <dd>ул. Толстого, 3, Чебоксары<br><span class="muted">ТЦ «Будайка», 3 этаж</span></dd>
-          </div>
-          <div>
-            <dt>Телефон</dt>
-            <dd><a href="tel:+78352755505">8 (835) 275-55-05</a></dd>
-          </div>
-          <div>
-            <dt>Часы работы</dt>
-            <dd>
-              Вс–Чт: 12:00 – 00:00<br>
-              Пт–Сб: 12:00 – 03:00
-            </dd>
-          </div>
-          <div>
-            <dt>Мы в соцсетях</dt>
-            <dd class="social-row">
-              <a href="https://vk.ru/moon_magic_cheb" target="_blank" rel="noopener" aria-label="ВКонтакте" class="social-icon">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.6 17.2c-5.4 0-8.5-3.7-8.6-9.9h2.7c.1 4.6 2.1 6.5 3.7 6.9V7.3h2.6v3.9c1.6-.2 3.2-2 3.8-3.9h2.5c-.4 2.3-2.1 4.1-3.3 4.9 1.2.6 3.1 2.2 3.8 4.9h-2.9c-.6-1.8-2-3.2-3.9-3.4v3.4h-.3z" fill="currentColor"/></svg>
-              </a>
-              <a href="https://t.me/moon_magic_cheb" target="_blank" rel="noopener" aria-label="Telegram" class="social-icon">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 4.5 3.4 11.3c-1 .4-1 1.4.1 1.7l4.3 1.3 1.6 5.1c.2.6 1 .8 1.4.3l2.4-2.6 4.5 3.3c.7.5 1.6.1 1.8-.7l3-15.4c.2-.9-.7-1.6-1.5-1.3ZM8.6 13.7l9-6.1c.3-.2.6.2.3.4l-7.3 7.1-.3 3-1.5-4.4Z" fill="currentColor"/></svg>
-              </a>
-            </dd>
-          </div>
-        </dl>
+          <dl class="contact-list" data-reveal>
+            <div>
+              <dt>Адрес</dt>
+              <dd>ул. Толстого, 3, Чебоксары<br><span class="muted">ТЦ «Будайка», 3 этаж</span></dd>
+            </div>
+            <div>
+              <dt>Телефон</dt>
+              <dd><a href="tel:+78352755505">8 (835) 275-55-05</a></dd>
+            </div>
+            <div>
+              <dt>Часы работы</dt>
+              <dd>
+                Вс–Чт: 12:00 – 00:00<br>
+                Пт–Сб: 12:00 – 03:00
+              </dd>
+            </div>
+            <div>
+              <dt>Мы в соцсетях</dt>
+              <dd class="social-row">
+                <a href="https://vk.ru/moon_magic_cheb" target="_blank" rel="noopener" aria-label="ВКонтакте" class="social-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13.6 17.2c-5.4 0-8.5-3.7-8.6-9.9h2.7c.1 4.6 2.1 6.5 3.7 6.9V7.3h2.6v3.9c1.6-.2 3.2-2 3.8-3.9h2.5c-.4 2.3-2.1 4.1-3.3 4.9 1.2.6 3.1 2.2 3.8 4.9h-2.9c-.6-1.8-2-3.2-3.9-3.4v3.4h-.3z" fill="currentColor"/></svg>
+                </a>
+                <a href="https://t.me/moon_magic_cheb" target="_blank" rel="noopener" aria-label="Telegram" class="social-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 4.5 3.4 11.3c-1 .4-1 1.4.1 1.7l4.3 1.3 1.6 5.1c.2.6 1 .8 1.4.3l2.4-2.6 4.5 3.3c.7.5 1.6.1 1.8-.7l3-15.4c.2-.9-.7-1.6-1.5-1.3ZM8.6 13.7l9-6.1c.3-.2.6.2.3.4l-7.3 7.1-.3 3-1.5-4.4Z" fill="currentColor"/></svg>
+                </a>
+              </dd>
+            </div>
+          </dl>
 
-        <div class="contact-cta">
-          <a class="btn btn-primary" href="#booking" data-open-booking>Забронировать стол</a>
-          <a class="btn btn-outline" href="tel:+78352755505">Позвонить</a>
+          <div class="contact-cta" data-reveal>
+            <a class="btn btn-primary" href="#booking" data-open-booking>Забронировать стол</a>
+            <a class="btn btn-outline" href="tel:+78352755505">Позвонить</a>
+          </div>
+        </div>
+
+        <div class="contacts-map" data-reveal>
+          <iframe
+            src="https://maps.google.com/maps?q=%D0%A7%D0%B5%D0%B1%D0%BE%D0%BA%D1%81%D0%B0%D1%80%D1%8B%2C%20%D1%83%D0%BB.%20%D0%A2%D0%BE%D0%BB%D1%81%D1%82%D0%BE%D0%B3%D0%BE%2C%203&t=&z=16&ie=UTF8&iwloc=&output=embed"
+            loading="lazy"
+            title="Карта — ул. Толстого, 3, Чебоксары"
+            aria-label="Карта проезда к МУН"></iframe>
         </div>
       </div>
 
-      <div class="contacts-map" data-reveal>
-        <iframe
-          src="https://maps.google.com/maps?q=%D0%A7%D0%B5%D0%B1%D0%BE%D0%BA%D1%81%D0%B0%D1%80%D1%8B%2C%20%D1%83%D0%BB.%20%D0%A2%D0%BE%D0%BB%D1%81%D1%82%D0%BE%D0%B3%D0%BE%2C%203&t=&z=16&ie=UTF8&iwloc=&output=embed"
-          loading="lazy"
-          title="Карта — ул. Толстого, 3, Чебоксары"
-          aria-label="Карта проезда к МУН"></iframe>
+      <div class="contacts-footer">
+        <div class="logo footer-logo">
+          <span class="logo-phase">
+            <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
+            <span class="logo-phase-shadow" aria-hidden="true"></span>
+          </span>
+        </div>
+        <p class="footer-motto">МУН — это место, где люди проводят время вместе</p>
+        <div class="footer-bottom">
+          <span>© <span id="year"></span> МУН</span>
+          <span>ул. Толстого, 3, Чебоксары</span>
+          <span>8 (835) 275-55-05</span>
+        </div>
       </div>
     </div>
   </section>
 
 </main>
-
-<footer class="site-footer">
-  <div class="wrap footer-inner">
-    <div class="logo footer-logo">
-      <img class="logo-mark" src="img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
-    </div>
-    <p class="footer-motto">МУН — это место, где люди проводят время вместе</p>
-    <div class="footer-bottom">
-      <span>© <span id="year"></span> МУН</span>
-      <span>ул. Толстого, 3, Чебоксары</span>
-      <span>8 (835) 275-55-05</span>
-    </div>
-  </div>
-</footer>
 
 <!-- Mobile sticky action bar -->
 <div class="sticky-actions" role="toolbar" aria-label="Быстрые действия">
