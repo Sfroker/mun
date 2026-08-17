@@ -43,7 +43,11 @@ a{ color: inherit; text-decoration:none; }
 h1,h2,h3{ font-family: var(--font-display); font-weight:500; margin:0 0 .5em; color: var(--c-milk); }
 p{ margin:0 0 1em; color: var(--c-mineral); }
 ul{ list-style:none; margin:0; padding:0; }
-button{ font-family: inherit; cursor:pointer; }
+button{
+  font-family: inherit; cursor:pointer; color: inherit;
+  background: none; border: none; margin: 0; padding: 0;
+  -webkit-appearance: none; appearance: none;
+}
 
 .wrap{
   max-width: var(--wrap);
