@@ -128,6 +128,7 @@
     closeMobileNav();
     showSegment(activeSegment);
     requestAnimationFrame(positionSegmentIndicator);
+    updateCartBar();
   }
 
   function closeModal() {
@@ -136,12 +137,14 @@
     modal.setAttribute("aria-hidden", "true");
     unlockPageAfterModal();
     if (lastFocused) lastFocused.focus({ preventScroll: true });
+    updateCartBar();
   }
 
   openTriggers.forEach(function (el) {
     el.addEventListener("click", function (e) {
       e.preventDefault();
       if (bookingModal) closeBookingModal();
+      closeCartModal();
       openModal();
     });
   });
@@ -171,6 +174,7 @@
     bookingModal.setAttribute("aria-hidden", "false");
     lockPageForModal();
     closeMobileNav();
+    updateCartBar();
   }
 
   function closeBookingModal() {
@@ -179,6 +183,7 @@
     bookingModal.setAttribute("aria-hidden", "true");
     unlockPageAfterModal();
     if (bookingLastFocused) bookingLastFocused.focus({ preventScroll: true });
+    updateCartBar();
   }
 
   if (bookingModal) {
@@ -186,6 +191,7 @@
       el.addEventListener("click", function (e) {
         e.preventDefault();
         closeModal();
+        closeCartModal();
         openBookingModal();
       });
     });
@@ -196,6 +202,171 @@
       if (e.key === "Escape" && bookingModal.classList.contains("is-open")) closeBookingModal();
     });
   }
+
+  /* ------------------------------------------------------------------
+   * Cart — "add to order" on every priced menu item, so a guest can
+   * collect everything in one place and show the total (and the list)
+   * to a waiter instead of pointing at items one by one.
+   * ------------------------------------------------------------------ */
+  var cartModal = document.getElementById("cart-modal");
+  var cartBody = document.getElementById("cart-body");
+  var cartTotalAmount = document.getElementById("cart-total-amount");
+  var cartBar = document.getElementById("cart-bar");
+  var cartBarCount = document.getElementById("cart-bar-count");
+  var cartBarTotal = document.getElementById("cart-bar-total");
+  var cartCloseTriggers = document.querySelectorAll("[data-close-cart]");
+  var cartBackToMenuBtn = document.getElementById("cart-back-to-menu");
+  var cartClearBtn = document.getElementById("cart-clear");
+  var cartLastFocused = null;
+
+  function loadCart() {
+    try {
+      var raw = window.localStorage && localStorage.getItem("mun-cart");
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveCart() {
+    try {
+      if (window.localStorage) localStorage.setItem("mun-cart", JSON.stringify(cart));
+    } catch (e) { /* private mode / storage full — cart just won't persist across reloads */ }
+  }
+
+  var cart = loadCart();
+
+  function formatRub(n) {
+    return n.toLocaleString("ru-RU") + " ₽";
+  }
+
+  function cartCount() {
+    var n = 0;
+    Object.keys(cart).forEach(function (k) { n += cart[k].qty; });
+    return n;
+  }
+
+  function cartTotal() {
+    var sum = 0;
+    Object.keys(cart).forEach(function (k) { sum += cart[k].qty * cart[k].price; });
+    return sum;
+  }
+
+  function updateCartBar() {
+    var count = cartCount();
+    if (cartBarCount) cartBarCount.textContent = count;
+    if (cartBarTotal) cartBarTotal.textContent = formatRub(cartTotal());
+    var bookingOpen = bookingModal && bookingModal.classList.contains("is-open");
+    var cartOpen = cartModal && cartModal.classList.contains("is-open");
+    if (cartBar) cartBar.classList.toggle("is-visible", count > 0 && !bookingOpen && !cartOpen);
+  }
+
+  function renderCartModal() {
+    if (!cartBody) return;
+    var keys = Object.keys(cart);
+    if (!keys.length) {
+      cartBody.innerHTML = '<p class="cart-empty">Пока пусто — добавьте блюда из меню, нажимая «+» рядом с позицией.</p>';
+    } else {
+      cartBody.innerHTML = "";
+      keys.forEach(function (key) {
+        var item = cart[key];
+        var row = el("div", "cart-item");
+
+        var info = el("div", "cart-item-info");
+        info.appendChild(el("span", "cart-item-name", escapeHTML(item.name)));
+        info.appendChild(el("span", "cart-item-line", formatRub(item.qty * item.price)));
+        row.appendChild(info);
+
+        var stepper = el("div", "menu-qty-stepper cart-item-stepper");
+        stepper.setAttribute("data-key", key);
+        var decBtn = el("button", "", "−");
+        decBtn.type = "button";
+        decBtn.setAttribute("data-cart-action", "dec");
+        decBtn.setAttribute("aria-label", "Уменьшить количество");
+        stepper.appendChild(decBtn);
+        stepper.appendChild(el("span", "menu-qty-count", String(item.qty)));
+        var incBtn = el("button", "", "+");
+        incBtn.type = "button";
+        incBtn.setAttribute("data-cart-action", "inc");
+        incBtn.setAttribute("aria-label", "Увеличить количество");
+        stepper.appendChild(incBtn);
+        row.appendChild(stepper);
+
+        var removeBtn = el("button", "cart-item-remove", "&times;");
+        removeBtn.type = "button";
+        removeBtn.setAttribute("data-cart-action", "remove");
+        removeBtn.setAttribute("data-key", key);
+        removeBtn.setAttribute("aria-label", "Удалить из заказа");
+        row.appendChild(removeBtn);
+
+        cartBody.appendChild(row);
+      });
+    }
+    if (cartTotalAmount) cartTotalAmount.textContent = formatRub(cartTotal());
+  }
+
+  if (cartBody) {
+    cartBody.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-cart-action]");
+      if (!btn) return;
+      var key = btn.getAttribute("data-key") || (btn.closest("[data-key]") && btn.closest("[data-key]").getAttribute("data-key"));
+      if (!key || !cart[key]) return;
+      var action = btn.getAttribute("data-cart-action");
+      if (action === "inc") cart[key].qty++;
+      else if (action === "dec") { cart[key].qty--; if (cart[key].qty <= 0) delete cart[key]; }
+      else if (action === "remove") delete cart[key];
+      saveCart();
+      renderCartModal();
+      updateCartBar();
+    });
+  }
+
+  function openCartModal() {
+    if (!cartModal || cartModal.classList.contains("is-open")) return;
+    cartLastFocused = document.activeElement;
+    renderCartModal();
+    cartModal.classList.add("is-open");
+    cartModal.setAttribute("aria-hidden", "false");
+    lockPageForModal();
+    closeMobileNav();
+    updateCartBar();
+  }
+
+  function closeCartModal() {
+    if (!cartModal || !cartModal.classList.contains("is-open")) return;
+    cartModal.classList.remove("is-open");
+    cartModal.setAttribute("aria-hidden", "true");
+    unlockPageAfterModal();
+    if (cartLastFocused) cartLastFocused.focus({ preventScroll: true });
+    updateCartBar();
+  }
+
+  if (cartBar) {
+    cartBar.addEventListener("click", function () {
+      closeModal();
+      closeBookingModal();
+      openCartModal();
+    });
+  }
+  cartCloseTriggers.forEach(function (el) { el.addEventListener("click", closeCartModal); });
+  if (cartBackToMenuBtn) {
+    cartBackToMenuBtn.addEventListener("click", function () {
+      closeCartModal();
+      openModal();
+    });
+  }
+  if (cartClearBtn) {
+    cartClearBtn.addEventListener("click", function () {
+      cart = {};
+      saveCart();
+      renderCartModal();
+      updateCartBar();
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && cartModal && cartModal.classList.contains("is-open")) closeCartModal();
+  });
+  updateCartBar();
 
   /* ---------------- CSV parsing ---------------- */
   function parseCSV(text) {
@@ -314,6 +485,39 @@
     return e;
   }
 
+  function parsePriceNumber(priceStr) {
+    if (!priceStr) return NaN;
+    var n = parseFloat(String(priceStr).replace(/,/g, ""));
+    return isNaN(n) ? NaN : n;
+  }
+
+  function paintQtyControl(wrap) {
+    var key = wrap.getAttribute("data-key");
+    var qty = cart[key] ? cart[key].qty : 0;
+    if (qty > 0) {
+      wrap.innerHTML =
+        '<div class="menu-qty-stepper">' +
+          '<button type="button" data-cart-action="dec" aria-label="Уменьшить количество">−</button>' +
+          '<span class="menu-qty-count">' + qty + "</span>" +
+          '<button type="button" data-cart-action="inc" aria-label="Увеличить количество">+</button>' +
+        "</div>";
+    } else {
+      wrap.innerHTML = '<button type="button" class="menu-qty-add" data-cart-action="add" aria-label="Добавить в заказ">+</button>';
+    }
+  }
+
+  function renderQtyControl(item, category) {
+    var priceNum = parsePriceNumber(item.price);
+    if (!priceNum || priceNum <= 0) return null;
+    var wrap = el("div", "menu-qty");
+    wrap.setAttribute("data-key", category + "|" + item.name + "|" + item.price);
+    wrap.setAttribute("data-name", item.name);
+    wrap.setAttribute("data-price", priceNum);
+    wrap.setAttribute("data-category", category);
+    paintQtyControl(wrap);
+    return wrap;
+  }
+
   function renderMenu(items, isFallback) {
     var groups = groupByCategory(items);
 
@@ -335,6 +539,8 @@
         nameRow.appendChild(el("span", "menu-item-name", escapeHTML(item.name)));
         nameRow.appendChild(el("span", "menu-item-leader"));
         if (item.price) nameRow.appendChild(el("span", "menu-item-price", escapeHTML(item.price) + " ₽"));
+        var qtyControl = renderQtyControl(item, group.category);
+        if (qtyControl) nameRow.appendChild(qtyControl);
         row.appendChild(nameRow);
         if (item.description) row.appendChild(el("p", "menu-item-desc", escapeHTML(item.description)));
         category.appendChild(row);
@@ -347,6 +553,32 @@
       ? "Показан снимок меню на 06.08.2026. Актуальность и наличие позиций уточняйте у персонала."
       : "Цены и наличие позиций уточняйте у персонала.";
   }
+
+  modalBody.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-cart-action]");
+    if (!btn) return;
+    var wrap = btn.closest(".menu-qty");
+    if (!wrap) return;
+    var key = wrap.getAttribute("data-key");
+    var action = btn.getAttribute("data-cart-action");
+    if (action === "add" || action === "inc") {
+      if (!cart[key]) {
+        cart[key] = {
+          name: wrap.getAttribute("data-name"),
+          price: parseFloat(wrap.getAttribute("data-price")),
+          category: wrap.getAttribute("data-category"),
+          qty: 0
+        };
+      }
+      cart[key].qty++;
+    } else if (action === "dec" && cart[key]) {
+      cart[key].qty--;
+      if (cart[key].qty <= 0) delete cart[key];
+    }
+    saveCart();
+    paintQtyControl(wrap);
+    updateCartBar();
+  });
 
   function escapeHTML(str) {
     var d = document.createElement("div");

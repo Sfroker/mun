@@ -139,7 +139,7 @@ button{ font-family: inherit; cursor:pointer; }
    Header
    ========================================================================== */
 .site-header{
-  position: sticky; top:0; z-index: 40;
+  position: fixed; top:0; left:0; right:0; z-index: 40;
   background: rgba(13,20,32,.86);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,.06);
@@ -299,7 +299,7 @@ button{ font-family: inherit; cursor:pointer; }
   50%{ opacity:1; transform: scale(1.15); }
 }
 
-.hero-inner{ position:relative; z-index:1; padding-top: 90px; padding-bottom: 60px; }
+.hero-inner{ position:relative; z-index:1; padding-top: 112px; padding-bottom: 48px; }
 .hero-inner > *{
   opacity: 0;
   animation: heroRise .9s cubic-bezier(.16,.8,.24,1) forwards;
@@ -690,6 +690,34 @@ section{ position: relative; z-index:1; }
 .sticky-book{ background: var(--c-ember); color: var(--c-milk); }
 
 /* ==========================================================================
+   Floating cart bar — the "one place" summary of everything added from the
+   menu, so a guest can hand the total + list to a waiter. Visible on the
+   main site and inside the menu modal; hidden inside booking/cart modals.
+   ========================================================================== */
+.cart-bar{
+  display:flex; align-items:center; gap: 12px;
+  position: fixed; left:50%; bottom: 20px; z-index: 46;
+  transform: translate(-50%, 160%);
+  background: var(--c-ember); color: var(--c-milk); border:none;
+  border-radius: 999px;
+  padding: 15px 24px;
+  font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+  white-space: nowrap;
+  box-shadow: 0 16px 34px rgba(0,0,0,.4);
+  transition: transform .35s cubic-bezier(.16,.8,.24,1);
+}
+.cart-bar.is-visible{ transform: translate(-50%, 0); }
+.cart-bar-count{
+  background: rgba(255,255,255,.24); border-radius: 999px;
+  min-width: 20px; padding: 3px 8px; font-size:.75rem;
+}
+.cart-bar-total{ font-weight:500; letter-spacing:.02em; }
+@media (max-width: 760px){
+  .cart-bar{ bottom: calc(84px + env(safe-area-inset-bottom)); padding: 13px 20px; }
+  body.modal-open .cart-bar{ bottom: calc(16px + env(safe-area-inset-bottom)); }
+}
+
+/* ==========================================================================
    Menu / booking modal — full-page takeover, native document scroll
    ==========================================================================
    Earlier versions used position:fixed with an internally scrolling div.
@@ -789,11 +817,37 @@ body.modal-open > .sticky-actions{
 
 .menu-item{ padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,.09); }
 .menu-item:last-child{ border-bottom:none; }
-.menu-item-row{ display:flex; align-items:baseline; gap:8px; }
+.menu-item-row{ display:flex; align-items:center; gap:8px; }
 .menu-item-name{ color: var(--c-milk); font-size:.98rem; }
-.menu-item-leader{ flex:1; border-bottom: 1px dotted var(--c-graphite-line); transform: translateY(-4px); }
+.menu-item-leader{ flex:1; border-bottom: 1px dotted var(--c-graphite-line); align-self:center; margin-top: -2px; }
 .menu-item-price{ color: var(--c-ember); font-size:.95rem; white-space:nowrap; }
 .menu-item-desc{ margin: 4px 0 0; font-size:.85rem; color: var(--c-graphite); }
+
+/* Add-to-order control on each item — a round "+" that turns into a
+   [− qty +] stepper once the item is in the cart. */
+.menu-qty{ display:flex; align-items:center; flex-shrink:0; }
+.menu-qty-add{
+  width: 27px; height:27px; border-radius:50%;
+  border: 1px solid var(--c-graphite-line); background: transparent; color: var(--c-milk);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; line-height:1;
+  transition: border-color var(--transition), color var(--transition), background var(--transition), transform var(--transition);
+}
+.menu-qty-add:hover{ border-color: var(--c-ember); color: var(--c-ember); }
+.menu-qty-add:active{ transform: scale(.9); }
+.menu-qty-stepper{
+  display:flex; align-items:center; gap:2px;
+  border: 1px solid var(--c-ember-soft); background: rgba(184,75,47,.1);
+  border-radius: 999px; padding: 3px;
+}
+.menu-qty-stepper button{
+  width:23px; height:23px; border-radius:50%; border:none; background:transparent; color: var(--c-milk);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.9rem; line-height:1;
+  transition: background var(--transition), color var(--transition);
+}
+.menu-qty-stepper button:hover{ background: rgba(184,75,47,.28); color: var(--c-ember); }
+.menu-qty-count{ min-width:18px; text-align:center; font-size:.82rem; color: var(--c-milk); }
 
 .menu-note{
   margin:0; padding: 14px clamp(20px,4vw,48px); font-size:.72rem; color: var(--c-graphite);
@@ -810,6 +864,38 @@ body.modal-open > .sticky-actions{
   margin: 16px 0 0; font-size:.8rem; color: var(--c-graphite); text-align:center;
 }
 .booking-modal-fallback a:hover{ color: var(--c-ember); }
+
+/* Cart modal — the itemised list + total meant to be shown to the waiter */
+.cart-modal-inner{ max-width: 720px; }
+.cart-modal-body{ flex:1; padding: 24px clamp(20px,4vw,48px) 8px; }
+.cart-empty{ color: var(--c-graphite); text-align:center; padding: 60px 0; }
+.cart-item{
+  display:flex; align-items:center; justify-content:space-between; gap: 14px;
+  padding: 16px 0; border-bottom: 1px dashed rgba(255,255,255,.09);
+}
+.cart-item:last-child{ border-bottom:none; }
+.cart-item-info{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+.cart-item-name{ color: var(--c-milk); font-size:.98rem; }
+.cart-item-line{ color: var(--c-ember); font-size:.85rem; }
+.cart-item-stepper{ flex-shrink:0; }
+.cart-item-remove{
+  background:none; border:none; color: var(--c-graphite); font-size:1.3rem; line-height:1;
+  width:28px; height:28px; flex-shrink:0;
+  transition: color var(--transition);
+}
+.cart-item-remove:hover{ color: var(--c-ember); }
+.cart-modal-footer{
+  padding: 20px clamp(20px,4vw,48px) clamp(28px,5vw,44px);
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.cart-total-row{
+  display:flex; align-items:baseline; justify-content:space-between;
+  font-family: var(--font-display); font-size: 1.5rem; color: var(--c-milk);
+  margin-bottom: 14px;
+}
+.cart-total-row span:last-child{ color: var(--c-ember); }
+.cart-hint{ font-size:.82rem; color: var(--c-graphite); margin-bottom: 20px; }
+.cart-modal-actions{ display:flex; gap: 14px; flex-wrap:wrap; }
 
 @media (min-width: 640px){
   .menu-modal-body{ grid-template-columns: repeat(2, 1fr); }
@@ -849,7 +935,7 @@ body.modal-open > .sticky-actions{
   .sticky-actions{ display:grid; }
   .contacts-footer{ padding-bottom: 90px; }
 
-  .hero-inner{ padding-top: 60px; }
+  .hero-inner{ padding-top: 96px; padding-bottom: 36px; }
   .slide-ghost{ opacity:.3; }
   .slide.is-active .slide-ghost{ opacity:.5; }
 }

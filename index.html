@@ -362,6 +362,13 @@
   <a href="#booking" class="sticky-btn sticky-book" data-open-booking>Забронировать</a>
 </div>
 
+<!-- Floating cart bar — shows once at least one menu item is added -->
+<button class="cart-bar" id="cart-bar" type="button">
+  <span class="cart-bar-label">Заказ</span>
+  <span class="cart-bar-count" id="cart-bar-count">0</span>
+  <span class="cart-bar-total" id="cart-bar-total">0 ₽</span>
+</button>
+
 <!-- MENU MODAL -->
 <div class="menu-modal" id="menu-modal" aria-hidden="true">
   <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
@@ -407,6 +414,32 @@
           Если форма не загрузилась, воспользуйтесь
           <a href="https://restoza.ru/book/moon-magic" target="_blank" rel="noopener">прямой ссылкой</a>.
         </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="menu-modal" id="cart-modal" aria-hidden="true">
+  <div class="menu-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
+    <div class="menu-modal-inner cart-modal-inner">
+      <div class="menu-modal-sticky">
+        <div class="menu-modal-head">
+          <h3 id="cart-modal-title">Ваш заказ</h3>
+          <button class="menu-modal-close" data-close-cart aria-label="Закрыть заказ">&times;</button>
+        </div>
+      </div>
+      <div class="cart-modal-body" id="cart-body"></div>
+      <div class="cart-modal-footer">
+        <div class="cart-total-row">
+          <span>Итого</span>
+          <span id="cart-total-amount">0 ₽</span>
+        </div>
+        <p class="cart-hint">Покажите этот список официанту, чтобы сделать заказ.</p>
+        <div class="cart-modal-actions">
+          <button class="btn btn-primary" type="button" id="cart-back-to-menu">Вернуться в меню</button>
+          <button class="btn btn-outline" type="button" id="cart-clear">Очистить заказ</button>
+        </div>
       </div>
     </div>
   </div>
