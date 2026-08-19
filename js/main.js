@@ -97,6 +97,7 @@
   var storyModal = document.getElementById("story-modal");
   var storyCard = document.getElementById("story-card");
   var storyProgress = document.getElementById("story-progress");
+  var storyContent = storyCard ? storyCard.querySelector(".story-content") : null;
   var storyTitle = document.getElementById("story-title");
   var storyText = document.getElementById("story-text");
   var storyBtn = document.getElementById("story-btn");
@@ -113,8 +114,11 @@
       btn.type = "button";
       btn.setAttribute("role", "listitem");
       btn.setAttribute("aria-label", story.label);
+      var thumb = story.image
+        ? '<span class="story-thumb" style="background-image:url(&quot;' + story.image + '&quot;)"></span>'
+        : '<span class="story-thumb tint-' + (story.tint || "ember") + '"></span>';
       btn.innerHTML =
-        '<span class="story-ring"><span class="story-thumb tint-' + (story.tint || "ember") + '"></span></span>' +
+        '<span class="story-ring">' + thumb + "</span>" +
         '<span class="story-label">' + escapeHTML(story.label) + "</span>";
       btn.addEventListener("click", function () { openStoryModal(i); });
       storiesRow.appendChild(btn);
@@ -132,9 +136,17 @@
     if (!story) return;
     activeStoryIndex = index;
 
-    storyCard.className = "story-card tint-" + (story.tint || "ember");
-    storyTitle.textContent = story.title;
-    storyText.textContent = story.text;
+    if (story.image) {
+      storyCard.className = "story-card has-image";
+      storyCard.style.backgroundImage = "url('" + story.image + "')";
+    } else {
+      storyCard.className = "story-card tint-" + (story.tint || "ember");
+      storyCard.style.backgroundImage = "";
+    }
+    storyTitle.textContent = story.title || "";
+    storyTitle.hidden = !story.title;
+    storyText.textContent = story.text || "";
+    storyText.hidden = !story.text;
     if (story.buttonText && story.buttonHref) {
       storyBtn.textContent = story.buttonText;
       storyBtn.href = story.buttonHref;
@@ -162,6 +174,9 @@
     } else {
       storyBtn.style.display = "none";
       storyBtn.onclick = null;
+    }
+    if (storyContent) {
+      storyContent.hidden = !story.title && !story.text && !(story.buttonText && story.buttonHref);
     }
 
     storyProgress.innerHTML = "";
