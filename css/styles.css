@@ -692,6 +692,7 @@ section{ position: relative; z-index:1; }
   transition: border-color var(--transition), color var(--transition);
 }
 .ph-block:hover span{ border-color: var(--c-ember); color: var(--c-mineral); }
+.ph-block.has-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
 .about-media .ph-1{ aspect-ratio: 4/5; }
 
 /* Menu CTA / Reviews band */
