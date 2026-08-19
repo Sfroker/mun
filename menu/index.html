@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Меню — МУН</title>
+<meta name="description" content="Меню МУН — паназиатская и авторская кухня, бар и карта вин. Добавляйте блюда в заказ и показывайте список официанту.">
+<meta name="theme-color" content="#0D1420">
+
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<div class="noise" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="../#hero" class="logo" aria-label="МУН — на главную">
+      <img class="logo-mark" src="../img/mun-logo-full.svg" alt="МУН" width="1094" height="1454">
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="../#about">О нас</a>
+      <a href="../menu/" aria-current="page">Меню</a>
+      <a href="../#gallery">Атмосфера</a>
+      <a href="../#booking">Бронирование</a>
+      <a href="../#reviews">Отзывы</a>
+      <a href="../#contacts">Контакты</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="phone-link" href="tel:+78352755505">8 (835) 275-55-05</a>
+      <a class="btn btn-outline" href="../#booking">Забронировать стол</a>
+    </div>
+
+    <button class="burger" id="burger" aria-label="Открыть меню навигации" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="../#about">О нас</a>
+    <a href="../menu/" aria-current="page">Меню</a>
+    <a href="../#gallery">Атмосфера</a>
+    <a href="../#booking">Бронирование</a>
+    <a href="../#reviews">Отзывы</a>
+    <a href="../#contacts">Контакты</a>
+    <a class="phone-link" href="tel:+78352755505">8 (835) 275-55-05</a>
+  </div>
+</header>
+
+<main class="menu-page">
+  <div id="menu-browse">
+    <section class="menu-page-head">
+      <div class="wrap">
+        <h1 class="visually-hidden">Меню МУН</h1>
+        <p class="menu-page-intro">
+          Ознакомьтесь с меню и добавляйте понравившиеся позиции в заказ —
+          готовый список можно показать официанту.
+        </p>
+        <div class="menu-segment" id="menu-segment">
+          <span class="menu-segment-indicator" id="menu-segment-indicator" aria-hidden="true"></span>
+          <button class="menu-segment-btn is-active" type="button" data-segment="food">Кухня</button>
+          <button class="menu-segment-btn" type="button" data-segment="bar">Бар</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-page-list">
+      <div class="wrap">
+        <div class="menu-modal-body" id="menu-body">
+          <p class="menu-loading">Загружаем меню…</p>
+        </div>
+        <p class="menu-note" id="menu-note"></p>
+      </div>
+    </section>
+  </div>
+
+  <div id="cart-view" hidden>
+    <section class="cart-view">
+      <div class="wrap cart-view-inner">
+        <div class="cart-view-head">
+          <h2>Ваш заказ</h2>
+          <button class="menu-modal-close" id="cart-view-close" aria-label="Вернуться к меню">&times;</button>
+        </div>
+        <div class="cart-modal-body" id="cart-body"></div>
+        <div class="cart-modal-footer">
+          <div class="cart-total-row">
+            <span>Итого</span>
+            <span id="cart-total-amount">0 ₽</span>
+          </div>
+          <p class="cart-hint">Покажите этот список официанту, чтобы сделать заказ.</p>
+          <div class="cart-modal-actions">
+            <button class="btn btn-primary" type="button" id="cart-back-to-menu">Вернуться в меню</button>
+            <button class="btn btn-outline" type="button" id="cart-clear">Очистить заказ</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="menu-page-footer">
+  <div class="wrap">
+    <a class="btn btn-outline" href="../">← Вернуться на главную</a>
+    <div class="menu-page-footer-info">
+      <span>ул. Толстого, 3, Чебоксары</span>
+      <span>8 (835) 275-55-05</span>
+      <span>© <span id="year"></span> МУН</span>
+    </div>
+    <div class="footer-links">
+      <a href="../privacy/">Политика конфиденциальности</a>
+      <a href="../cookies/">Политика cookie</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating cart bar — shows once at least one item is added -->
+<button class="cart-bar" id="cart-bar" type="button">
+  <span class="cart-bar-label">Заказ</span>
+  <span class="cart-bar-count" id="cart-bar-count">0</span>
+  <span class="cart-bar-total" id="cart-bar-total">0 ₽</span>
+</button>
+
+<script src="../js/menu-data.js"></script>
+<script src="../js/menu.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

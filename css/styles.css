@@ -742,6 +742,10 @@ section{ position: relative; z-index:1; }
 }
 .social-icon svg{ width:18px; height:18px; }
 .social-icon:hover{ border-color: var(--c-ember); color: var(--c-ember); transform: translateY(-3px); }
+.legal-info{
+  font-size:.72rem; line-height:1.6; color: var(--c-graphite);
+  margin: 4px 0 26px; max-width: 42ch;
+}
 .contact-cta{ display:flex; gap:16px; flex-wrap:wrap; }
 
 .contacts-map{
@@ -764,6 +768,11 @@ section{ position: relative; z-index:1; }
   display:flex; gap: 22px; flex-wrap:wrap; justify-content:center;
   font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color: var(--c-graphite);
 }
+.footer-links{
+  display:flex; gap: 18px; flex-wrap:wrap; justify-content:center;
+  font-size:.7rem; letter-spacing:.02em; color: var(--c-graphite);
+}
+.footer-links a:hover{ color: var(--c-mineral); }
 
 /* ==========================================================================
    Menu page (menu.html) — the menu used to live in a popup; it's now a
@@ -799,6 +808,22 @@ section{ position: relative; z-index:1; }
   display:flex; gap: 20px; flex-wrap:wrap; justify-content:center;
   font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--c-graphite);
 }
+
+/* ==========================================================================
+   Legal pages (privacy/, cookies/) — plain readable prose, reusing the
+   site's header/footer chrome but none of the slide/modal machinery.
+   ========================================================================== */
+.legal-page{ padding: clamp(130px, 16vw, 170px) 0 clamp(80px, 10vw, 120px); }
+.legal-page .wrap{ max-width: 760px; }
+.legal-page h1{ font-size: clamp(2rem, 4vw, 2.7rem); margin-bottom: 10px; }
+.legal-updated{ font-size:.78rem; color: var(--c-graphite); margin-bottom: 44px; }
+.legal-page h2{ font-size: clamp(1.15rem, 2.2vw, 1.4rem); margin: 42px 0 14px; }
+.legal-page p{ color: var(--c-mineral); }
+.legal-page ul, .legal-page ol{ margin: 0 0 1em; padding-left: 22px; color: var(--c-mineral); }
+.legal-page li{ margin-bottom: .5em; }
+.legal-page a{ color: var(--c-ember); text-decoration: underline; text-underline-offset: 3px; }
+.legal-page a:hover{ color: var(--c-milk); }
+.legal-page strong{ color: var(--c-milk); font-weight: 500; }
 
 /* ==========================================================================
    Mobile sticky action bar

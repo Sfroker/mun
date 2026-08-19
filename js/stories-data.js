@@ -19,7 +19,7 @@ window.MUN_STORIES = [
     title: "Меню обновилось",
     text: "Добавили новые позиции в паназиатскую кухню и обновили карту коктейлей. Загляните — теперь всё в одном месте, с ценами и описанием.",
     buttonText: "Смотреть меню",
-    buttonHref: "menu.html"
+    buttonHref: "menu/"
   },
   {
     label: "Караоке",
@@ -27,7 +27,7 @@ window.MUN_STORIES = [
     title: "Новый звук в караоке",
     text: "Профессиональная караоке-система и новые микрофоны. Собирайте компанию до 40 человек.",
     buttonText: "Про караоке-зал",
-    buttonHref: "index.html#karaoke"
+    buttonHref: "#karaoke"
   },
   {
     label: "DJ-сеты",
@@ -35,7 +35,7 @@ window.MUN_STORIES = [
     title: "Пятница и суббота — с диджеем",
     text: "По выходным вечер продолжается с живыми диджей-сетами. Бронируйте стол заранее — по пятницам и субботам мест меньше.",
     buttonText: "Забронировать стол",
-    buttonHref: "index.html#booking"
+    buttonHref: "#booking"
   },
   {
     label: "Терраса",
@@ -43,7 +43,7 @@ window.MUN_STORIES = [
     title: "Терраса открыта",
     text: "Тёплые вечера — на летней террасе. Тот же бар и кухня, только на свежем воздухе.",
     buttonText: "Забронировать стол",
-    buttonHref: "index.html#booking"
+    buttonHref: "#booking"
   },
   {
     label: "VIP-залы",
@@ -51,6 +51,6 @@ window.MUN_STORIES = [
     title: "Отмечаете день рождения?",
     text: "Два приватных VIP-зала на 15 и 25 мест — для дней рождения, корпоративов и закрытых компаний.",
     buttonText: "Про VIP-залы",
-    buttonHref: "index.html#vip"
+    buttonHref: "#vip"
   }
 ];

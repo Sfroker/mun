@@ -139,8 +139,29 @@
       storyBtn.textContent = story.buttonText;
       storyBtn.href = story.buttonHref;
       storyBtn.style.display = "";
+      // Anchor links point at sections inside <main>, which is hidden
+      // (display:none) while this modal is open — a plain click would
+      // silently do nothing. Close the story first, then either open the
+      // booking modal (for #booking) or scroll to the target section.
+      storyBtn.onclick = function (e) {
+        var href = story.buttonHref;
+        if (href.charAt(0) !== "#") return; // real page link (e.g. menu/) — let it navigate
+        e.preventDefault();
+        closeStoryModal();
+        if (href === "#booking" && bookingModal) {
+          openBookingModal();
+          return;
+        }
+        var target = document.getElementById(href.slice(1));
+        if (target) {
+          requestAnimationFrame(function () {
+            target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+          });
+        }
+      };
     } else {
       storyBtn.style.display = "none";
+      storyBtn.onclick = null;
     }
 
     storyProgress.innerHTML = "";
