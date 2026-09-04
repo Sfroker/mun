@@ -46,14 +46,6 @@ window.MUN_STORIES = [
     buttonHref: "#booking"
   },
   {
-    label: "Терраса",
-    tint: "ember",
-    title: "Терраса открыта",
-    text: "Тёплые вечера — на летней террасе. Тот же бар и кухня, только на свежем воздухе.",
-    buttonText: "Забронировать стол",
-    buttonHref: "#booking"
-  },
-  {
     label: "VIP-залы",
     tint: "mineral",
     title: "Отмечаете день рождения?",
