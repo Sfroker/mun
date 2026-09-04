@@ -302,10 +302,6 @@ button{
   from{ opacity:0; transform: translateX(-50%) translateY(14px); }
   to{ opacity:1; transform: translateX(-50%); }
 }
-.eyebrow{
-  font-size:.72rem; letter-spacing:.25em; text-transform:uppercase; color: var(--c-graphite);
-  margin-bottom: 34px;
-}
 .hero-logo{ position:relative; margin: 0 0 8px; }
 .hero-logo h1{ position:relative; z-index:1; margin:0; }
 .hero-logo-img{
@@ -466,24 +462,6 @@ section{ position: relative; z-index:1; }
   padding: clamp(70px, 10vw, 130px) 0;
 }
 .hero.slide{ padding:0; }
-
-/* Oversized ghost numerals — the "typography meets background" layer sitting
-   behind each slide's heading. Purely decorative, low-contrast, subtly
-   settles/relaxes when its slide becomes active. */
-.slide-ghost{
-  position:absolute; z-index:0; pointer-events:none;
-  top:50%; left:50%;
-  transform: translate(-50%,-42%) scale(.96);
-  font-family: var(--font-display);
-  font-size: clamp(9rem, 34vw, 24rem);
-  line-height:1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(241,232,218,.09);
-  opacity:.5;
-  transition: transform 1.4s cubic-bezier(.16,.8,.24,1), opacity 1.4s ease;
-  white-space: nowrap;
-}
-.slide.is-active .slide-ghost{ transform: translate(-50%,-42%) scale(1); opacity:.85; }
 
 /* Headings reveal (blur + rise) each time their slide becomes active again —
    replayable, so scrolling back up feels as alive as scrolling down. */
@@ -702,7 +680,7 @@ section{ position: relative; z-index:1; }
 /* Contacts + footer */
 .contacts{ background: var(--c-panel); }
 .contacts .wrap{ padding-top: 4px; }
-.contacts-grid{ max-width: 560px; margin: 0 auto; }
+.contacts-grid{ max-width: 560px; margin: 0 auto; text-align:center; }
 .contact-list{ margin: 30px 0; display:grid; gap: 22px; }
 .contact-list dt{
   font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color: var(--c-graphite); margin-bottom:6px;
@@ -710,7 +688,7 @@ section{ position: relative; z-index:1; }
 .contact-list dd{ margin:0; font-size: 1.02rem; color: var(--c-milk); }
 .contact-list dd a:hover{ color: var(--c-ember); }
 .contact-list .muted{ color: var(--c-graphite); font-size:.9rem; }
-.social-row{ display:flex; gap: 14px; }
+.social-row{ display:flex; gap: 14px; justify-content:center; }
 .social-icon{
   width: 40px; height:40px; border:1px solid var(--c-graphite-line); border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -720,9 +698,9 @@ section{ position: relative; z-index:1; }
 .social-icon:hover{ border-color: var(--c-ember); color: var(--c-ember); transform: translateY(-3px); }
 .legal-info{
   font-size:.72rem; line-height:1.6; color: var(--c-graphite);
-  margin: 4px 0 26px; max-width: 42ch;
+  margin: 4px auto 26px; max-width: 42ch;
 }
-.contact-cta{ display:flex; gap:16px; flex-wrap:wrap; }
+.contact-cta{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
 
 .contacts-footer{
   margin-top: clamp(50px, 7vw, 84px);
@@ -1063,8 +1041,6 @@ body.modal-open > .sticky-actions{
   .contacts-footer{ padding-bottom: 90px; }
 
   .hero-inner{ padding-top: 96px; padding-bottom: 36px; }
-  .slide-ghost{ opacity:.3; }
-  .slide.is-active .slide-ghost{ opacity:.5; }
 }
 
 @media (min-width: 1081px){
@@ -1084,6 +1060,6 @@ body.modal-open > .sticky-actions{
   [data-reveal]{ opacity:1; transform:none; }
   .hero-inner > *, .scroll-hint{ opacity:1; }
   .hero-bg, .hero-bg::before{ animation:none; }
-  .slide-heading, .slide-ghost{ opacity:1; transform:none; filter:none; }
+  .slide-heading{ opacity:1; transform:none; filter:none; }
   .hero.slide:not(.is-active) .hero-logo-img{ filter:none; transform:none; }
 }
