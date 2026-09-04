@@ -25,7 +25,6 @@
 *,*::before,*::after{ box-sizing: border-box; }
 html{
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
 }
 body{
   margin:0;
@@ -37,7 +36,6 @@ body{
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-body.modal-open{ scroll-snap-type: none; }
 img{ max-width:100%; display:block; }
 a{ color: inherit; text-decoration:none; }
 h1,h2,h3{ font-family: var(--font-display); font-weight:500; margin:0 0 .5em; color: var(--c-milk); }
@@ -201,29 +199,6 @@ button{
   color: var(--c-mineral);
 }
 .mobile-nav a:last-child{ border-bottom:none; color: var(--c-milk); margin-top: 6px; }
-
-/* ==========================================================================
-   Side slide navigation — one dot per full-screen section
-   ========================================================================== */
-.slide-nav{
-  position: fixed; right: clamp(18px, 3vw, 34px); top:50%; z-index: 40;
-  transform: translateY(-50%);
-  display:flex; flex-direction:column; align-items:center; gap: 16px;
-}
-.slide-dot{
-  width: 22px; height:22px; padding:0; background:none; border:none;
-  display:flex; align-items:center; justify-content:center;
-}
-.slide-dot span{
-  width:7px; height:7px; border-radius:50%;
-  border: 1.5px solid var(--c-graphite-line);
-  transition: background var(--transition), border-color var(--transition), transform var(--transition-pop);
-}
-.slide-dot:hover span{ border-color: var(--c-mineral); }
-.slide-dot.is-active span{
-  background: var(--c-ember); border-color: var(--c-ember);
-  transform: scale(1.5);
-}
 
 /* ==========================================================================
    Hero
@@ -475,21 +450,20 @@ button{
 }
 
 /* ==========================================================================
-   Slides — every section below the hero is a full-screen "page" that snaps
-   into place as you scroll. scroll-margin-top keeps the sticky header from
-   overlapping the snapped edge. Sections stay in normal document flow (no
-   nested scroll containers, no JS scroll hijacking) so mobile touch
-   scrolling behaves exactly like plain native scrolling everywhere.
+   Sections — plain document flow, sized to their own content (no forced
+   full-screen paging). scroll-margin-top keeps the fixed header from
+   overlapping a section's top when you jump to it via nav/anchor links.
+   Kept the .slide class name (and its is-active-driven reveal animations
+   below) since only the full-screen "presentation" behavior was removed —
+   the ghost-numeral/heading entrance animations still work exactly as
+   before, now triggered per-section instead of by exclusive slide-tracking.
    ========================================================================== */
 section{ position: relative; z-index:1; }
 .slide{
   position:relative;
-  min-height: 100svh;
-  display:flex; align-items:center;
   overflow:hidden;
-  scroll-snap-align: start;
   scroll-margin-top: var(--header-h);
-  padding: clamp(120px, 15vw, 170px) 0 clamp(70px, 9vw, 110px);
+  padding: clamp(70px, 10vw, 130px) 0;
 }
 .hero.slide{ padding:0; }
 
@@ -890,7 +864,6 @@ section{ position: relative; z-index:1; }
 
 body.modal-open > .noise,
 body.modal-open > .site-header,
-body.modal-open > .slide-nav,
 body.modal-open > main,
 body.modal-open > .sticky-actions{
   display:none;
@@ -1066,7 +1039,6 @@ body.modal-open > .sticky-actions{
   .main-nav{ display:none; }
   .header-actions .btn{ display:none; }
   .burger{ display:block; }
-  .slide-nav{ display:none; }
 }
 
 @media (max-width: 760px){
@@ -1075,7 +1047,7 @@ body.modal-open > .sticky-actions{
   .header-actions .phone-link{ display:none; }
   .mobile-nav.is-open{ display:flex; }
 
-  .slide{ padding: clamp(100px, 20vw, 130px) 0 60px; }
+  .slide{ padding: clamp(60px, 16vw, 90px) 0; }
 
   .about-grid{ grid-template-columns: 1fr; gap: 28px; }
   .about-media .ph-1{ aspect-ratio: 16/9; }
@@ -1109,7 +1081,6 @@ body.modal-open > .sticky-actions{
     transition-duration: .001ms !important;
     scroll-behavior: auto !important;
   }
-  html{ scroll-snap-type: none; }
   [data-reveal]{ opacity:1; transform:none; }
   .hero-inner > *, .scroll-hint{ opacity:1; }
   .hero-bg, .hero-bg::before{ animation:none; }

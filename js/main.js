@@ -234,55 +234,55 @@
   }
 
   /* ------------------------------------------------------------------
-   * Slides — full-screen sections. Tracks which one is currently most
-   * visible so its heading/ghost numeral can animate in (replayably,
-   * unlike the one-shot [data-reveal] items below), and drives the header
-   * logo's "moon phase" — the eclipse shadow recedes as you move deeper
-   * into the page, so the mark reads as fully hidden on the hero and
-   * fully whole by the time you reach the contacts slide.
+   * Section reveal — each section plays its heading/ghost-numeral
+   * entrance animation as it scrolls into view, replayably (unlike the
+   * one-shot [data-reveal] items below). The hero carries this same
+   * class, so its logo's dim-when-scrolled-past effect (see the CSS)
+   * comes along for free. Sections are plain document flow — no more
+   * full-screen paging/snapping.
    * ------------------------------------------------------------------ */
   var slideEls = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-  var slideDots = document.querySelectorAll(".slide-dot");
-  var slideRatios = new Map();
-
-  function updateActiveSlide() {
-    var best = null;
-    var bestRatio = 0;
-    slideEls.forEach(function (s) {
-      var r = slideRatios.get(s) || 0;
-      if (r > bestRatio) { bestRatio = r; best = s; }
-    });
-    if (!best) return;
-    var idx = slideEls.indexOf(best);
-    slideEls.forEach(function (s) { s.classList.toggle("is-active", s === best); });
-    slideDots.forEach(function (d) {
-      d.classList.toggle("is-active", d.getAttribute("data-slide-target") === best.id);
-    });
-    var phase = slideEls.length > 1 ? idx / (slideEls.length - 1) : 1;
-    document.documentElement.style.setProperty("--moon-phase", phase.toFixed(3));
-  }
 
   if (slideEls.length) {
     if ("IntersectionObserver" in window) {
       var slideObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          slideRatios.set(entry.target, entry.intersectionRatio);
+          entry.target.classList.toggle("is-active", entry.isIntersecting);
         });
-        updateActiveSlide();
-      }, { threshold: [0, .15, .3, .45, .6, .75, .9, 1] });
+      }, { threshold: 0.15 });
       slideEls.forEach(function (s) { slideObserver.observe(s); });
     } else {
       slideEls.forEach(function (s) { s.classList.add("is-active"); });
-      document.documentElement.style.setProperty("--moon-phase", "1");
     }
   }
 
-  slideDots.forEach(function (dot) {
-    dot.addEventListener("click", function () {
-      var targetEl = document.getElementById(dot.getAttribute("data-slide-target"));
-      if (targetEl) targetEl.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
-    });
-  });
+  /* ------------------------------------------------------------------
+   * Scroll-position effects — mobile sticky action bar visibility, and
+   * the footer logo's "moon phase" (the eclipse shadow recedes as you
+   * scroll deeper into the page). Both driven off a single rAF-
+   * throttled scroll listener rather than IntersectionObserver, which
+   * can lag a frame behind fast scrolling.
+   * ------------------------------------------------------------------ */
+  var stickyActions = document.querySelector(".sticky-actions");
+  var heroSection = document.querySelector(".hero");
+  var scrollTicking = false;
+
+  function updateScrollEffects() {
+    scrollTicking = false;
+    if (stickyActions && heroSection) {
+      stickyActions.classList.toggle("is-visible", window.scrollY >= heroSection.offsetHeight - 4);
+    }
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    var phase = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 1;
+    document.documentElement.style.setProperty("--moon-phase", phase.toFixed(3));
+  }
+
+  window.addEventListener("scroll", function () {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(updateScrollEffects);
+  }, { passive: true });
+  updateScrollEffects();
 
   /* ------------------------------------------------------------------
    * Scroll reveal
@@ -303,32 +303,6 @@
       }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
       revealTargets.forEach(function (t) { revealObserver.observe(t); });
     }
-  }
-
-  /* ------------------------------------------------------------------
-   * Mobile sticky action bar — appears once the hero is scrolled past.
-   * Driven directly off scroll position (rAF-throttled) rather than
-   * IntersectionObserver: with scroll-snap in play, an IO callback can
-   * lag a frame behind a fast snap animation, which read as "the bar
-   * doesn't show until you scroll again." A plain scrollY check has no
-   * such timing gap.
-   * ------------------------------------------------------------------ */
-  var stickyActions = document.querySelector(".sticky-actions");
-  var heroSection = document.querySelector(".hero");
-
-  if (stickyActions && heroSection) {
-    var stickyTicking = false;
-    function updateStickyActions() {
-      stickyTicking = false;
-      var pastHero = window.scrollY >= heroSection.offsetHeight - 4;
-      stickyActions.classList.toggle("is-visible", pastHero);
-    }
-    window.addEventListener("scroll", function () {
-      if (stickyTicking) return;
-      stickyTicking = true;
-      requestAnimationFrame(updateStickyActions);
-    }, { passive: true });
-    updateStickyActions();
   }
 
   /* ------------------------------------------------------------------
