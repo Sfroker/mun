@@ -614,6 +614,11 @@ section{ position: relative; z-index:1; }
 .hall-grid{
   display:grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items:center;
 }
+/* Без этого грид-колонка с фото (реальный <img>) не сжимается до её
+   доли колонки и раздувает трек шире доступной ширины, съедая правый
+   отступ секции — классический эффект "grid blowout" от фото с большой
+   собственной шириной внутри grid-item. */
+.hall-grid > *{ min-width: 0; }
 .hall-photo{ aspect-ratio: 4/5; }
 .hall-text .slide-heading{ margin-bottom: 14px; }
 .hall-text p{ margin:0; max-width: 46ch; }
@@ -1078,6 +1083,12 @@ body.modal-open > .cookie-banner{
   .about-media .ph-1{ aspect-ratio: 16/9; }
   .hall-grid{ grid-template-columns: 1fr; gap: 24px; }
   .hall-photo{ aspect-ratio: 16/9; }
+  /* Фото караоке-зала — портретное, при 16/9 обрезается слишком сильно */
+  #karaoke .hall-photo{ aspect-ratio: 1/1; }
+  /* Длинный текст кнопки ("Узнайте подробности по телефону") не
+     помещается в одну строку на узких экранах — .btn по умолчанию
+     nowrap, здесь даём ему перенестись и растянуться на всю ширину. */
+  .hall-text .btn{ white-space: normal; width: 100%; text-align: center; }
 
   .gallery-grid{ grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .gallery-grid .g1, .gallery-grid .g4{ grid-column: span 1; grid-row: span 1; aspect-ratio: 1/1; }
