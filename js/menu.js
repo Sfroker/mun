@@ -295,9 +295,11 @@
       menuBody.appendChild(category);
     });
 
-    menuNote.textContent = isFallback
+    var note = isFallback
       ? "Показан снимок меню на 06.08.2026. Актуальность и наличие позиций уточняйте у персонала."
       : "Цены и наличие позиций уточняйте у персонала.";
+    if (activeSegment === "lunch") note = "В каждый комплекс входят багет и напиток. " + note;
+    menuNote.textContent = note;
   }
 
   menuBody.addEventListener("click", function (e) {

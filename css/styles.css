@@ -689,12 +689,6 @@ section{ position: relative; z-index:1; }
 .gallery-grid .g1{ grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
 .gallery-grid .g4{ grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
 
-/* Booking */
-.booking .wrap{ max-width: 680px; text-align:center; }
-.booking .slide-heading{ margin-left:auto; margin-right:auto; }
-.booking .wrap > p{ max-width: 56ch; margin-left:auto; margin-right:auto; }
-.booking .wrap > .btn{ margin-top: 10px; }
-
 /* Contacts + footer */
 .contacts{ background: var(--c-panel); }
 .contacts .wrap{ padding-top: 4px; }
@@ -793,6 +787,34 @@ section{ position: relative; z-index:1; }
 .legal-page strong{ color: var(--c-milk); font-weight: 500; }
 
 /* ==========================================================================
+   Cookie notice — informational bar about Яндекс.Метрика; dismissed once
+   and remembered in localStorage (see js/cookie-consent.js)
+   ========================================================================== */
+.cookie-banner{
+  display:none;
+  position: fixed; left:0; right:0; bottom:0; z-index: 90;
+  background: rgba(13,20,32,.97);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 18px clamp(16px,4vw,24px);
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+.cookie-banner.is-visible{ display:block; }
+.cookie-banner-inner{
+  max-width: 1100px; margin:0 auto;
+  display:flex; align-items:center; gap: 24px;
+}
+.cookie-banner-text{
+  flex:1; margin:0;
+  font-size:.8rem; line-height:1.55; color: var(--c-mineral);
+}
+.cookie-banner .btn{ flex:none; white-space:nowrap; }
+@media (max-width: 760px){
+  .cookie-banner-inner{ flex-direction:column; align-items:stretch; gap: 14px; }
+  .cookie-banner .btn{ width:100%; }
+}
+
+/* ==========================================================================
    Mobile sticky action bar
    ========================================================================== */
 .sticky-actions{
@@ -862,7 +884,8 @@ section{ position: relative; z-index:1; }
 body.modal-open > .noise,
 body.modal-open > .site-header,
 body.modal-open > main,
-body.modal-open > .sticky-actions{
+body.modal-open > .sticky-actions,
+body.modal-open > .cookie-banner{
   display:none;
 }
 
