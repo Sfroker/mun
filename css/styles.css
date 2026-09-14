@@ -617,6 +617,7 @@ section{ position: relative; z-index:1; }
 .hall-photo{ aspect-ratio: 4/5; }
 .hall-text .slide-heading{ margin-bottom: 14px; }
 .hall-text p{ margin:0; max-width: 46ch; }
+.hall-text .btn{ margin-top: 22px; }
 .highlight-card-tag{
   display:inline-block;
   font-size:.7rem; letter-spacing:.15em; text-transform:uppercase;
@@ -624,6 +625,23 @@ section{ position: relative; z-index:1; }
   background: rgba(184,75,47,.1);
   padding: 7px 14px; border-radius: 999px; margin-bottom: 14px;
 }
+.hall-text .hall-lead{
+  font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--c-milk);
+  margin-bottom: 16px;
+}
+.hall-text .hall-occasions{
+  font-size:.78rem; letter-spacing:.03em; color: var(--c-mineral);
+  margin-bottom: 12px;
+}
+.hall-text .hall-promo{
+  display:inline-block;
+  font-size:.78rem; font-weight:600; letter-spacing:.02em;
+  color: var(--c-ember); border: 1px solid var(--c-ember-soft);
+  background: rgba(184,75,47,.1);
+  padding: 8px 16px; border-radius: 999px; margin-bottom: 18px;
+}
+.hall-text p[data-reveal]:not(.hall-lead):not(.hall-occasions):not(.hall-promo){ margin-bottom: 4px; }
 
 /* placeholder photo blocks */
 .ph-block{
