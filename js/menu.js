@@ -93,7 +93,7 @@
   }
 
   /* ---------------- CSV parsing ---------------- */
-  function parseCSV(text) {
+  function parseCSVRaw(text) {
     var rows = [];
     var row = [];
     var field = "";
@@ -121,7 +121,15 @@
       }
     }
     if (field.length || row.length) { row.push(field); rows.push(row); }
-    return rows.filter(function (r) { return r.some(function (v) { return v.trim() !== ""; }); });
+    return rows;
+  }
+
+  // Полностью пустые строки отбрасываются — на листах кухни/бара они не
+  // несут смысла. Лист бизнес-ланча использует их как разделители между
+  // разделами (Салаты/Супы/Горячее/комплексы), поэтому его разбор
+  // (csvToLunchMenu) работает с parseCSVRaw напрямую, без этого фильтра.
+  function parseCSV(text) {
+    return parseCSVRaw(text).filter(function (r) { return r.some(function (v) { return v.trim() !== ""; }); });
   }
 
   function normalizeKey(key) {
@@ -201,6 +209,63 @@
       });
     }
     return items;
+  }
+
+  /* ------------------------------------------------------------------
+   * Лист бизнес-ланча устроен принципиально иначе, чем кухня/бар: нет
+   * строки-шапки со столбцами "Наименование"/"Цена" — это просто два
+   * столбца. В первом блоке идут категории-разделители (Салаты, Супы,
+   * Горячее), под каждой — варианты блюд БЕЗ цены (гость выбирает один
+   * вариант на комплекс). В конце — сами комплексы: название вида
+   * "Салат+Суп" и цена набора целиком. Хлеб/напиток, которые тоже
+   * входят в комплекс, отдельной строкой не расписываются — про них
+   * есть общая пометка в примечании под списком (см. renderMenu).
+   * ------------------------------------------------------------------ */
+  function csvToLunchMenu(text) {
+    var rows = parseCSVRaw(text);
+    var salads = [], soups = [], mains = [];
+    var currentList = null;
+    var combos = [];
+
+    rows.forEach(function (r) {
+      var col0 = (r[0] || "").trim();
+      var col1 = (r[1] || "").trim();
+      if (!col0 && !col1) { currentList = null; return; }
+
+      if (col0 && col1) {
+        var price = formatPrice(col1);
+        if (price) combos.push({ name: col0, price: price });
+        return;
+      }
+
+      // Одна заполненная ячейка — либо заголовок раздела, либо вариант
+      // блюда внутри текущего раздела.
+      var norm = col0.toLowerCase();
+      if (norm.indexOf("салат") === 0) { currentList = salads; return; }
+      if (norm.indexOf("суп") === 0) { currentList = soups; return; }
+      if (norm.indexOf("горяч") === 0) { currentList = mains; return; }
+      if (currentList) currentList.push(col0);
+      // прочие одиночные строки (заголовок таблицы, багет, напиток,
+      // подпись самого раздела комплексов) — не варианты блюд, пропускаем
+    });
+
+    function describeCombo(name) {
+      var lower = name.toLowerCase();
+      var parts = [];
+      if (lower.indexOf("салат") !== -1 && salads.length) parts.push("Салат на выбор: " + salads.join(", "));
+      if (lower.indexOf("суп") !== -1 && soups.length) parts.push("Суп на выбор: " + soups.join(", "));
+      if (lower.indexOf("горяч") !== -1 && mains.length) parts.push("Горячее на выбор: " + mains.join(", "));
+      return parts.join(". ");
+    }
+
+    return combos.map(function (c) {
+      return {
+        category: "Комплексные обеды",
+        name: c.name.replace(/\s*\+\s*/g, " + "),
+        description: describeCombo(c.name),
+        price: c.price
+      };
+    });
   }
 
   /* ---------------- Rendering ---------------- */
@@ -367,7 +432,7 @@
         return res.text();
       })
       .then(function (text) {
-        var items = csvToMenu(text);
+        var items = segment === "lunch" ? csvToLunchMenu(text) : csvToMenu(text);
         if (!items.length) throw new Error("empty");
         loadedSegments[segment] = { items: items, isFallback: false };
         if (segment === activeSegment) renderMenu(items, false);
