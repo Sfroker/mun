@@ -904,7 +904,7 @@ body.modal-open > .sticky-actions{
   position: relative;
   display:flex; gap: 4px;
   margin: 0 clamp(20px,4vw,48px) 18px;
-  max-width: 360px;
+  max-width: 480px;
   padding: 4px;
   background: var(--c-panel-2); border: 1px solid var(--c-graphite-line); border-radius: 999px;
 }
@@ -917,10 +917,15 @@ body.modal-open > .sticky-actions{
 .menu-segment-btn{
   position:relative; z-index:1; flex:1;
   background: transparent; border: none; color: var(--c-mineral);
-  padding: 10px 16px; border-radius: 999px; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+  padding: 10px 10px; border-radius: 999px; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase;
+  white-space: nowrap;
   transition: color var(--transition);
 }
 .menu-segment-btn.is-active{ color: var(--c-eclipse); }
+
+@media (max-width: 420px){
+  .menu-segment-btn{ font-size:.64rem; letter-spacing:.02em; padding: 9px 4px; }
+}
 
 .menu-modal-body{
   flex:1;

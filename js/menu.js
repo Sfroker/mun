@@ -4,9 +4,9 @@
   /* ------------------------------------------------------------------
    * Google Sheets menu source
    * ------------------------------------------------------------------
-   * Меню и карта бара — два разных листа ОДНОЙ таблицы. Разносить их по
-   * разным файлам не нужно, но Google даёт отдельную ссылку на CSV для
-   * каждого листа, поэтому ссылок здесь две.
+   * Кухня, бар и бизнес-ланч — три разных листа ОДНОЙ таблицы. Разносить
+   * их по разным файлам не нужно, но Google даёт отдельную ссылку на CSV
+   * для каждого листа, поэтому ссылок здесь три.
    *
    * Как получить ссылку для листа:
    *   1. В Google Таблице откройте нужный лист (вкладку снизу).
@@ -14,21 +14,26 @@
    *   3. В первом выпадающем списке выберите именно этот лист (не «Всю
    *      книгу»), во втором — формат CSV, нажмите «Опубликовать».
    *   4. Скопируйте ссылку и вставьте в соответствующую константу ниже.
-   *   5. Повторите для второго листа.
+   *   5. Повторите для остальных листов.
    *
    * Столбцы распознаются по названию (регистр и порядок не важны, форматы
    * вроде «Наименование», «Отпускная цена новая», «Регион/Страна», «Объем»
    * поддержаны из коробки — см. normalizeKey ниже). Строки-разделители
    * разделов (где заполнена только одна ячейка) читаются как заголовок
    * категории для всех следующих строк — под такую структуру и сделаны
-   * оба листа таблицы «Мун Меню и Карта бара».
+   * листы «Мун Меню и Карта бара».
+   * Лист бизнес-ланча устроен иначе: одна строка = один комплекс, а его
+   * состав разложен по отдельным столбцам («Салат», «Суп», «Горячее»,
+   * «Гарнир» и т.п.) — normalizeKey/csvToMenu собирают их в описание в
+   * порядке подачи, а цена в столбце «Цена» — это цена всего комплекса.
    * Пока ссылки не указаны — показывается встроенный снимок реального
    * меню (js/menu-data.js), актуальный на 06.08.2026.
    * ------------------------------------------------------------------ */
   var MENU_FOOD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCfb102KV9uc-4rD_IF5uLubRoAKLe-Y7wNTly6ZQggB6XTJsBgI7rSnKvUZvbDfKXOItiYxCqyh-s/pub?gid=1020992713&single=true&output=csv";
   var MENU_BAR_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCfb102KV9uc-4rD_IF5uLubRoAKLe-Y7wNTly6ZQggB6XTJsBgI7rSnKvUZvbDfKXOItiYxCqyh-s/pub?gid=1889053653&single=true&output=csv";
+  var MENU_LUNCH_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCfb102KV9uc-4rD_IF5uLubRoAKLe-Y7wNTly6ZQggB6XTJsBgI7rSnKvUZvbDfKXOItiYxCqyh-s/pub?output=csv";
 
-  var FALLBACK_MENU = (window.MUN_MENU_DATA || { food: [], bar: [] });
+  var FALLBACK_MENU = (window.MUN_MENU_DATA || { food: [], bar: [], lunch: [] });
 
   /* ------------------------------------------------------------------
    * Header / mobile nav (same small widget as the main page)
@@ -128,6 +133,15 @@
     if (k.indexOf("состав") !== -1) return "composition";
     if (k.indexOf("регион") !== -1 || k.indexOf("стран") !== -1) return "region";
     if (k.indexOf("объ") !== -1 && (k.indexOf("объем") !== -1 || k.indexOf("объём") !== -1)) return "volume";
+    // Комплексные обеды: состав набора разложен по отдельным столбцам —
+    // собираем их в описание в естественном порядке подачи блюд.
+    if (k.indexOf("салат") !== -1) return "salad";
+    if (k.indexOf("суп") !== -1) return "soup";
+    if (k.indexOf("горяч") !== -1) return "main";
+    if (k.indexOf("гарнир") !== -1) return "side";
+    if (k.indexOf("напит") !== -1) return "drink";
+    if (k.indexOf("десерт") !== -1) return "dessert";
+    if (k.indexOf("хлеб") !== -1) return "bread";
     return k; // прочие столбцы (поставщик, значок в меню и т.п.) игнорируются
   }
 
@@ -164,6 +178,13 @@
       if (!raw.name) continue;
 
       var descParts = [];
+      if (raw.salad) descParts.push("Салат: " + raw.salad);
+      if (raw.soup) descParts.push("Суп: " + raw.soup);
+      if (raw.main) descParts.push("Горячее: " + raw.main);
+      if (raw.side) descParts.push("Гарнир: " + raw.side);
+      if (raw.drink) descParts.push("Напиток: " + raw.drink);
+      if (raw.dessert) descParts.push("Десерт: " + raw.dessert);
+      if (raw.bread) descParts.push("Хлеб: " + raw.bread);
       if (raw.description) descParts.push(raw.description);
       if (raw.composition) descParts.push(raw.composition);
       if (raw.region) descParts.push(raw.region);
@@ -327,7 +348,9 @@
   }
 
   function loadSegment(segment) {
-    var csvUrl = segment === "bar" ? MENU_BAR_CSV_URL : MENU_FOOD_CSV_URL;
+    var csvUrl = segment === "bar" ? MENU_BAR_CSV_URL
+      : segment === "lunch" ? MENU_LUNCH_CSV_URL
+      : MENU_FOOD_CSV_URL;
     var fallbackItems = FALLBACK_MENU[segment] || [];
 
     if (!csvUrl) {

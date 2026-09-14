@@ -395,5 +395,5 @@
     ]]
   ]);
 
-  global.MUN_MENU_DATA = { food: FOOD_MENU, bar: BAR_MENU };
+  global.MUN_MENU_DATA = { food: FOOD_MENU, bar: BAR_MENU, lunch: [] };
 })(window);
